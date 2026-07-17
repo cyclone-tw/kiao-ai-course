@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P0 系統填寫器 ‧ 分批匯出／匯入 Markdown</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1a2b4a;
+    --navy-light: #2c4368;
+    --gold: #c89a3e;
+    --gold-light: #e0b568;
+    --teal: #2d6e7e;
+    --bg: #faf8f3;
+    --bg-card: #ffffff;
+    --text: #1a1a1a;
+    --text-soft: #555;
+    --text-muted: #888;
+    --border: #e8e4dc;
+    --border-strong: #d0c8b8;
+    --layer1: #1a2b4a;
+    --layer2: #2d6e7e;
+    --layer3: #7d6233;
+    --layer4: #883e5e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* Course Banner */
+  .course-banner {
+    background: var(--gold);
+    color: var(--navy);
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .course-banner .kiao {
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    margin-right: 8px;
+    padding-right: 12px;
+    border-right: 1px solid rgba(26, 43, 74, 0.4);
+  }
+
+  /* Sticky Nav */
+  nav.top-nav {
+    position: sticky;
+    top: 0;
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 24px;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  nav.top-nav .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  nav.top-nav .brand {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--gold-light);
+    letter-spacing: 0.05em;
+  }
+  nav.top-nav .brand small {
+    display: block;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  nav.top-nav .nav-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  nav.top-nav .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  nav.top-nav .nav-links a:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* Hero */
+  header.hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    padding: 80px 24px 60px;
+    text-align: center;
+  }
+  header.hero h1 {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    color: var(--gold-light);
+  }
+  header.hero h2 {
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+    color: rgba(255,255,255,0.9);
+  }
+  header.hero .tagline {
+    font-size: 18px;
+    color: rgba(255,255,255,0.85);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+  header.hero .meta {
+    margin-top: 32px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.1em;
+  }
+  header.hero .course-line {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.15em;
+  }
+  header.hero .course-line .course-name {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* Container */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  section {
+    margin-bottom: 80px;
+  }
+
+  section h2.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--gold);
+    display: inline-block;
+  }
+  section .section-sub {
+    font-size: 18px;
+    color: var(--text-soft);
+    margin-bottom: 32px;
+  }
+
+  /* Architecture Diagram */
+  .architecture {
+    margin: 40px 0;
+  }
+  .arch-layer {
+    background: var(--bg-card);
+    border-left: 6px solid var(--navy);
+    padding: 24px 28px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .arch-layer:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .arch-layer.l1 { border-left-color: var(--layer1); }
+  .arch-layer.l2 { border-left-color: var(--layer2); }
+  .arch-layer.l3 { border-left-color: var(--layer3); }
+  .arch-layer.l4 { border-left-color: var(--layer4); }
+  .arch-layer h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--navy);
+  }
+  .arch-layer .layer-num {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-right: 8px;
+    letter-spacing: 0.05em;
+  }
+  .arch-layer.l1 .layer-num { background: var(--layer1); }
+  .arch-layer.l2 .layer-num { background: var(--layer2); }
+  .arch-layer.l3 .layer-num { background: var(--layer3); }
+  .arch-layer.l4 .layer-num { background: var(--layer4); }
+  .arch-layer p {
+    color: var(--text-soft);
+    font-size: 15px;
+  }
+  .arch-layer a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 8px;
+    display: inline-block;
+  }
+  .arch-layer a:hover { color: var(--navy); }
+  .arch-connector {
+    text-align: center;
+    color: var(--border-strong);
+    font-size: 24px;
+    line-height: 1;
+    margin: -4px 0;
+  }
+
+  /* Principle cards */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .principle-card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: 8px;
+    border-top: 3px solid var(--gold);
+  }
+  .principle-card h4 {
+    color: var(--navy);
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .principle-card p {
+    font-size: 14px;
+    color: var(--text-soft);
+  }
+
+  /* Why box */
+  .why-box, .howto-box {
+    background: var(--bg-card);
+    padding: 32px;
+    border-radius: 12px;
+    margin: 24px 0;
+    border-left: 4px solid var(--gold);
+  }
+  .why-box h3, .howto-box h3 {
+    color: var(--navy);
+    margin-bottom: 16px;
+    font-size: 22px;
+  }
+  .why-box p, .howto-box p {
+    color: var(--text-soft);
+    margin-bottom: 12px;
+  }
+  .howto-box .usage-row {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .howto-box .usage-row:last-child { border-bottom: none; }
+  .howto-box .usage-row strong { color: var(--navy); display: block; margin-bottom: 4px; }
+
+  /* Layer Sections */
+  .layer-section {
+    background: var(--bg-card);
+    padding: 48px 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    border-top: 6px solid var(--navy);
+  }
+  .layer-section.l1 { border-top-color: var(--layer1); }
+  .layer-section.l2 { border-top-color: var(--layer2); }
+  .layer-section.l3 { border-top-color: var(--layer3); }
+  .layer-section.l4 { border-top-color: var(--layer4); }
+
+  .layer-section h2.section-title { border-bottom-color: var(--gold); }
+
+  /* Selector tabs */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0 32px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--text-soft);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+  }
+  .tab-btn.active {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+  .layer-section.l2 .tab-btn.active { background: var(--layer2); border-color: var(--layer2); }
+  .layer-section.l3 .tab-btn.active { background: var(--layer3); border-color: var(--layer3); }
+  .layer-section.l4 .tab-btn.active { background: var(--layer4); border-color: var(--layer4); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* AI Instruction Box */
+  .ai-instruction {
+    background: linear-gradient(135deg, #f5f1e8 0%, #ede5d2 100%);
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin-bottom: 32px;
+    border-left: 4px solid var(--gold);
+    font-size: 14px;
+  }
+  .ai-instruction h4 {
+    color: var(--navy);
+    margin-bottom: 8px;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+  .ai-instruction ul {
+    margin-left: 20px;
+    color: var(--text-soft);
+  }
+  .ai-instruction li { margin-bottom: 4px; }
+
+  /* Question Block */
+  .block {
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .block:last-child { border-bottom: none; }
+  .block h3.block-title {
+    font-size: 20px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .block .block-intro {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .question {
+    margin-bottom: 24px;
+  }
+  .question label {
+    display: block;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .question .hint {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 400;
+    margin-left: 6px;
+  }
+  .question textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: #fefcf8;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .question textarea:focus {
+    outline: none;
+    border-color: var(--navy);
+    background: #fff;
+  }
+  .question textarea.tall { min-height: 120px; }
+  .question textarea.tallest { min-height: 180px; }
+
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .checkbox-row:hover { background: var(--bg); }
+  .checkbox-row input[type="checkbox"], .checkbox-row input[type="radio"] {
+    margin-top: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .checkbox-row span {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+
+  /* Footer with export */
+  .layer-actions {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .save-status {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .save-status.saved { color: var(--teal); }
+  .btn {
+    padding: 10px 24px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--navy-light); }
+  .btn.gold { background: var(--gold); }
+  .btn.gold:hover { background: var(--gold-light); }
+
+  /* Footer */
+  footer.site-footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.7);
+    padding: 40px 24px;
+    text-align: center;
+  }
+  footer.site-footer p { margin-bottom: 8px; font-size: 14px; }
+  footer.site-footer .pathfinder {
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    font-size: 12px;
+    margin-top: 16px;
+  }
+
+  /* Mobile */
+  @media (max-width: 700px) {
+    header.hero { padding: 60px 20px 40px; }
+    header.hero h1 { font-size: 40px; }
+    header.hero h2 { font-size: 18px; }
+    main { padding: 40px 16px; }
+    .layer-section { padding: 32px 20px; }
+    section h2.section-title { font-size: 24px; }
+    nav.top-nav .nav-links a { font-size: 12px; padding: 4px 8px; }
+  }
+
+  /* Print */
+  @media print {
+    nav.top-nav { display: none; }
+    header.hero { background: none; color: #000; }
+    .layer-section { box-shadow: none; page-break-after: always; }
+    .tab-content { display: block !important; }
+  }
+
+  /* Batch toolbar */
+  .batch-bar {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    border-bottom: 3px solid var(--gold);
+    padding: 14px 24px;
+    position: sticky;
+    top: 56px;
+    z-index: 90;
+  }
+  .batch-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .batch-bar h3 {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+  .batch-bar p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 2px;
+  }
+  .batch-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .batch-actions .btn {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+  .batch-actions .btn.ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+  }
+  .batch-actions .btn.ghost:hover {
+    border-color: var(--gold-light);
+    color: var(--gold-light);
+  }
+  .batch-actions label.file-btn {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .batch-actions input[type="file"] { display: none; }
+  .batch-mode {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+  }
+  .batch-mode label {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .progress-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    background: rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: var(--gold-light);
+  }
+  .progress-chip strong { color: #fff; }
+  .section-progress {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-right: auto;
+  }
+  .section-progress .pct {
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 999;
+    max-width: 360px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .import-panel {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    padding: 0 24px;
+  }
+  .import-note {
+    background: #fff8e8;
+    border: 1px solid #e8d5a8;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.6;
+  }
+  .import-note strong { color: var(--navy); }
+  @media (max-width: 720px) {
+    .batch-bar { top: 0; }
+    .batch-bar-inner { flex-direction: column; align-items: flex-start; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="course-banner">
+  <span class="kiao">KIAO</span>總校長的 AI 教育寶典 ‧ P0 分批填寫器（含 Markdown 匯出／匯入）
+</div>
+
+<nav class="top-nav">
+  <div class="nav-inner">
+    <div class="brand">P0 系統 ‧ 第零號個人系統<small>KIAO ‧ 總校長的 AI 教育寶典</small></div>
+    <div class="nav-links">
+      <a href="#overview">總覽</a>
+      <a href="#layer1">第一層</a>
+      <a href="#layer2">第二層</a>
+      <a href="#layer3">第三層</a>
+      <a href="#layer4">第四層</a>
+    </div>
+  </div>
+</nav>
+
+<!-- BATCH TOOLBAR -->
+<div class="batch-bar">
+  <div class="batch-bar-inner">
+    <div>
+      <h3>分批填寫工具列</h3>
+      <p>題目太多可分次填。先匯出空白模板離線寫，再匯入回來；或直接在這裡邊寫邊存。</p>
+      <div class="progress-chip" id="globalProgress">整體進度 <strong>0%</strong></div>
+    </div>
+    <div class="batch-actions">
+      <div class="batch-mode">
+        <span>匯入模式：</span>
+        <label><input type="radio" name="importMode" value="merge" checked> 只填空白</label>
+        <label><input type="radio" name="importMode" value="overwrite"> 覆寫已有</label>
+      </div>
+      <button class="btn ghost" type="button" onclick="exportBlankTemplates()">匯出全部空白模板</button>
+      <button class="btn ghost" type="button" onclick="exportAllFilled()">批次匯出已填內容</button>
+      <button class="btn ghost" type="button" onclick="exportJsonBackup()">匯出 JSON 備份</button>
+      <label class="btn file-btn" title="可一次選多個 .md">
+        匯入 Markdown
+        <input type="file" id="importMdInput" accept=".md,text/markdown,text/plain" multiple onchange="importMarkdownFiles(event)">
+      </label>
+      <label class="btn file-btn ghost" title="還原完整 JSON 備份">
+        匯入 JSON
+        <input type="file" id="importJsonInput" accept=".json,application/json" onchange="importJsonBackup(event)">
+      </label>
+    </div>
+  </div>
+</div>
+<div class="import-panel">
+  <div class="import-note">
+    <strong>怎麼分批填？</strong>
+    ① 點「匯出全部空白模板」會下載各模組的空白 .md（含題目與隱藏 key）→
+    ② 用編輯器慢慢填答案 →
+    ③ 再「匯入 Markdown」（可一次選多檔）合回來。瀏覽器也會自動存草稿，關掉再開不會丟。
+    本頁題目分類與結構對齊原站 <a href="https://roy722-creator.github.io/HSAILEARNING/" target="_blank" rel="noopener">P0 系統</a>。
+  </div>
+</div>
+
+
+<header class="hero">
+  <h1>P0 系統</h1>
+  <h2>第零號個人系統</h2>
+  <p class="tagline">讓 AI 真正認識你的四層架構。<br>沒有 P0，所有 AI 應用都是空轉。</p>
+  <p class="meta">設計者 ‧ 海碩 ‧ Pathfinder ‧ v1.0</p>
+  <p class="course-line">本系統收錄於 <span class="course-name">KIAO ‧ 總校長的 AI 教育寶典</span></p>
+</header>
+
+<main>
+
+<section id="overview">
+  <h2 class="section-title">系統總覽</h2>
+  <p class="section-sub">P0 系統是「給 AI 認識你」的完整檔案架構。寫好之後，跟任何 AI 對話前，先把對應的檔案丟給它，AI 就立刻知道你是「你」，不是別人。</p>
+
+  <div class="architecture">
+    <div class="arch-layer l1">
+      <h3><span class="layer-num">L1</span>核心檔案</h3>
+      <p>必填，每人一份。回答三件事：你目前的程度、你目前在處理的問題、你的處境。三個版本擇一：小孩版、青少年版、成人版。</p>
+      <a href="#layer1">前往第一層 →</a>
+    </div>
+    <div class="arch-connector">▼</div>
+    <div class="arch-layer l2">
+      <h3><span class="layer-num">L2</span>狀態層</h3>
+      <p>宣告你目前處於什麼狀態。同樣的核心檔案，狀態不同，AI 該給的支持完全不同。每季度更新。</p>
+      <a href="#layer2">前往第二層 →</a>
+    </div>
+    <div class="arch-connector">▼</div>
+    <div class="arch-layer l3">
+      <h3><span class="layer-num">L3</span>目的模組</h3>
+      <p>當你想要 AI 在某個領域深入幫你，加上對應模組。v1.0 提供：職涯模組、親職模組、重大決定模組。</p>
+      <a href="#layer3">前往第三層 →</a>
+    </div>
+    <div class="arch-connector">▼</div>
+    <div class="arch-layer l4">
+      <h3><span class="layer-num">L4</span>關係檔案</h3>
+      <p>讓 AI 認識「你跟另一個人的關係」。v1.0 提供伴侶共享版。市面 AI 工具幾乎都假設使用者孤立，這是新領域。</p>
+      <a href="#layer4">前往第四層 →</a>
+    </div>
+  </div>
+
+  <div class="why-box">
+    <h3>為什麼要有 P0 系統</h3>
+    <p>AI 給你的答案只有兩種：通用答案，或專屬答案。</p>
+    <p>如果 AI 不認識你，它給的就是「適合所有人」的通用答案，對你不一定深，因為它不夠認識你這個人。</p>
+    <p>P0 = Profile Zero = 第零號。零，是在所有事情開始之前。沒有 P0，後面所有 AI 應用都是空轉。</p>
+  </div>
+
+  <div class="howto-box">
+    <h3>怎麼用 P0 系統</h3>
+    <div class="usage-row">
+      <strong>一般日常 AI 對話</strong>
+      餵給 AI：第一層核心檔案 + 第二層狀態層
+    </div>
+    <div class="usage-row">
+      <strong>領域深入諮詢（職涯、親職等）</strong>
+      餵給 AI：第一層 + 第二層 + 對應第三層模組
+    </div>
+    <div class="usage-row">
+      <strong>跟伴侶 / 家庭一起做決定</strong>
+      餵給 AI：第四層關係檔案 + 兩人各自的第一層
+    </div>
+    <div class="usage-row">
+      <strong>填寫順序建議</strong>
+      第一週填核心檔案 → 第二週加狀態層 → 第三週起依需求加掛模組 → 有伴侶等兩人都填完核心，再做第四層
+    </div>
+  </div>
+
+  <h3 style="color:var(--navy);font-size:22px;margin:40px 0 8px">P0 系統的五個原則</h3>
+  <div class="principles">
+    <div class="principle-card">
+      <h4>漸進式</h4>
+      <p>從第一層開始，後面三層按需求加，不要一次填完所有。</p>
+    </div>
+    <div class="principle-card">
+      <h4>動態的</h4>
+      <p>不是寫一次就放著的死檔案。每季度或人生重大事件後更新。</p>
+    </div>
+    <div class="principle-card">
+      <h4>私密的</h4>
+      <p>這是你跟 AI 之間的，不是給家人、老闆、朋友看的。</p>
+    </div>
+    <div class="principle-card">
+      <h4>模組化</h4>
+      <p>每一層可以獨立存在、獨立更新、獨立餵 AI。</p>
+    </div>
+    <div class="principle-card">
+      <h4>可擴展</h4>
+      <p>未來會加新模組、新關係版本。系統會跟著你長大。</p>
+    </div>
+  </div>
+</section>
+
+<!-- LAYER 1 -->
+<section id="layer1" class="layer-section l1">
+  <h2 class="section-title">第一層 ‧ 核心檔案</h2>
+  <p class="section-sub">三個版本擇一。回答三件事：程度、問題、處境。這是後面所有層的基底。</p>
+
+  <div class="ai-instruction">
+    <h4>給 AI 的使用說明</h4>
+    <ul>
+      <li>請將整份檔案視為這位學員的核心識別。後續所有對話、分析、建議，都以這份檔案為前提。</li>
+      <li>讀完之後，你應該能回答：他現在的程度、目前在處理的問題、周圍的處境。</li>
+      <li>學員的「目前在處理的問題」是這份檔案最重要的部分。</li>
+    </ul>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="kids">小孩版（6 至 12 歲）</button>
+    <button class="tab-btn" data-tab="teens">青少年版（13 至 18 歲）</button>
+    <button class="tab-btn" data-tab="adults">成人版</button>
+  </div>
+
+  <!-- KIDS VERSION -->
+  <div class="tab-content active" data-content="kids">
+    <div class="block">
+      <h3 class="block-title">第一塊：認識你</h3>
+      <div class="question"><label>你想要 AI 怎麼叫你？</label><textarea data-key="k_name"></textarea></div>
+      <div class="question"><label>你今年幾歲，讀幾年級？</label><textarea data-key="k_age"></textarea></div>
+      <div class="question"><label>你今年最特別的一件事是什麼？<span class="hint">可能是一個成就、一個改變、或讓你很開心的事</span></label><textarea data-key="k_special" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第二塊：你的一天</h3>
+      <div class="question"><label>你早上幾點起床？喜歡早起還是晚起？</label><textarea data-key="k_morning"></textarea></div>
+      <div class="question"><label>你的一天通常會做哪些事？</label><textarea data-key="k_day" class="tall"></textarea></div>
+      <div class="question"><label>你最喜歡一天裡的哪一段時間？為什麼？</label><textarea data-key="k_fav_time"></textarea></div>
+      <div class="question"><label>你最不喜歡一天裡的哪一段時間？為什麼？</label><textarea data-key="k_unfav_time"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第三塊：你的學校</h3>
+      <div class="question"><label>你最喜歡哪一科？為什麼？</label><textarea data-key="k_fav_subject"></textarea></div>
+      <div class="question"><label>你最不喜歡哪一科？為什麼？</label><textarea data-key="k_unfav_subject"></textarea></div>
+      <div class="question"><label>你在學校最快樂的事是什麼？</label><textarea data-key="k_school_happy"></textarea></div>
+      <div class="question"><label>你在學校會擔心或不開心的事是什麼？</label><textarea data-key="k_school_worry"></textarea></div>
+      <div class="question"><label>在學校，有什麼是你很希望大人知道，但他們不知道的？</label><textarea data-key="k_school_secret" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第四塊：你最喜歡跟最不喜歡的事</h3>
+      <div class="question"><label>你最喜歡做的三件事</label><textarea data-key="k_love_three" class="tall"></textarea></div>
+      <div class="question"><label>你最不喜歡做的三件事</label><textarea data-key="k_hate_three" class="tall"></textarea></div>
+      <div class="question"><label>你最喜歡的一個人是誰？為什麼？</label><textarea data-key="k_fav_person"></textarea></div>
+      <div class="question"><label>你最喜歡的一首歌</label><textarea data-key="k_fav_song"></textarea></div>
+      <div class="question"><label>你最喜歡看的卡通、書、影片</label><textarea data-key="k_fav_show"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第五塊：你最厲害的事跟還在練的事</h3>
+      <div class="question"><label>你覺得自己最厲害的三件事</label><textarea data-key="k_strong" class="tall"></textarea></div>
+      <div class="question"><label>大人或同學常說你哪一件事很厲害？</label><textarea data-key="k_others_praise"></textarea></div>
+      <div class="question"><label>有什麼事你還在練、還沒練好？</label><textarea data-key="k_practicing"></textarea></div>
+      <div class="question"><label>你最想學會的一件事？為什麼？</label><textarea data-key="k_want_learn"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第六塊：你的家人跟朋友</h3>
+      <div class="question"><label>你家裡有哪些人？</label><textarea data-key="k_family" class="tall"></textarea></div>
+      <div class="question"><label>你跟誰最親近？為什麼？</label><textarea data-key="k_closest"></textarea></div>
+      <div class="question"><label>你最好的朋友是誰？</label><textarea data-key="k_best_friend"></textarea></div>
+      <div class="question"><label>你跟朋友最常做什麼？</label><textarea data-key="k_with_friends"></textarea></div>
+      <div class="question"><label>你會把心裡的話跟誰說？</label><textarea data-key="k_confide"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第七塊：你的小煩惱</h3>
+      <div class="question"><label>你最近有什麼小煩惱？</label><textarea data-key="k_worry" class="tall"></textarea></div>
+      <div class="question"><label>你會害怕什麼？</label><textarea data-key="k_fear"></textarea></div>
+      <div class="question"><label>當你不開心的時候，你會怎麼讓自己好過一點？</label><textarea data-key="k_cope"></textarea></div>
+      <div class="question"><label>你希望大人怎麼幫你？</label><textarea data-key="k_help_from_adult"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第八塊：你的夢想</h3>
+      <div class="question"><label>你長大想做什麼？</label><textarea data-key="k_dream"></textarea></div>
+      <div class="question"><label>如果你有一個願望，你會許什麼？</label><textarea data-key="k_wish"></textarea></div>
+      <div class="question"><label>你最想去的一個地方是？</label><textarea data-key="k_want_go"></textarea></div>
+      <div class="question"><label>你希望未來的自己是什麼樣子？</label><textarea data-key="k_future_self" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第九塊：你怎麼學東西</h3>
+      <div class="question"><label>你比較喜歡用哪種方式學東西？<span class="hint">看書、看影片、聽人講、動手做、討論</span></label><textarea data-key="k_learn_style"></textarea></div>
+      <div class="question"><label>你學新東西的時候，最不喜歡什麼？</label><textarea data-key="k_learn_hate"></textarea></div>
+      <div class="question"><label>你最近學會了什麼新東西？</label><textarea data-key="k_recently_learned"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">第十塊：想跟 AI 說的話</h3>
+      <div class="question"><label>如果你可以問 AI 一個問題，你最想問什麼？</label><textarea data-key="k_ai_question"></textarea></div>
+      <div class="question"><label>你希望 AI 怎麼幫你？</label><textarea data-key="k_ai_help"></textarea></div>
+      <div class="question"><label>有什麼事是你不希望 AI 幫你做的？<span class="hint">有些事自己做才好玩，AI 幫了反而沒意思</span></label><textarea data-key="k_ai_no" class="tall"></textarea></div>
+    </div>
+    <div class="layer-actions">
+      <span class="section-progress" data-progress-for="kids">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="kids">尚未儲存</span>
+      <button class="btn" onclick="exportSection('kids', '小孩版')">匯出小孩版</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('kids', '小孩版', {blank:true})">匯出空白模板</button>
+    </div>
+  </div>
+
+  <!-- TEENS VERSION -->
+  <div class="tab-content" data-content="teens">
+    <div class="block">
+      <h3 class="block-title">基本資料</h3>
+      <div class="question"><label>姓名（你想 AI 怎麼稱呼你）</label><textarea data-key="t_name"></textarea></div>
+      <div class="question"><label>出生年月日</label><textarea data-key="t_birth"></textarea></div>
+      <div class="question"><label>就讀學校 / 年級 / 所在城市</label><textarea data-key="t_school"></textarea></div>
+      <div class="question"><label>用三句話描述「現在的自己」</label><textarea data-key="t_self_three" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱一：我目前的程度</h3>
+      <p class="block-intro">程度不是分數，是「我目前在哪裡」。寫得誠實，AI 才知道從哪裡接你。</p>
+      <div class="question"><label>目前成績大概在班上的什麼位置 / 最有把握的科目 / 最沒把握的科目</label><textarea data-key="t_grade" class="tall"></textarea></div>
+      <div class="question"><label>用 1 到 10 給自己學習狀態打分，為什麼？</label><textarea data-key="t_learn_score"></textarea></div>
+      <div class="question"><label>學校的學習對你有意義嗎？哪些有，哪些沒有？</label><textarea data-key="t_school_meaning" class="tall"></textarea></div>
+      <div class="question"><label>目前最強的三項能力（不限學業）</label><textarea data-key="t_strong" class="tall"></textarea></div>
+      <div class="question"><label>目前最弱、會避開的三項能力</label><textarea data-key="t_weak" class="tall"></textarea></div>
+      <div class="question"><label>別人常稱讚你哪一點？私下批評你哪一點？</label><textarea data-key="t_others"></textarea></div>
+      <div class="question"><label>你被低估 / 被高估的部分是什麼？</label><textarea data-key="t_under_over"></textarea></div>
+      <div class="question"><label>比較喜歡哪種學習方式？需要什麼環境才能專心？</label><textarea data-key="t_learn_style"></textarea></div>
+      <div class="question"><label>最近一次「我學會了」的成功經驗 / 「我怎麼都學不會」的挫折經驗</label><textarea data-key="t_learn_exp" class="tall"></textarea></div>
+      <div class="question"><label>開始用 AI 多久了 / 最常用 AI 做什麼 / 一天用幾次</label><textarea data-key="t_ai_use" class="tall"></textarea></div>
+      <div class="question"><label>會跟 AI 講多深的事？對 AI 最大的疑問或不放心？</label><textarea data-key="t_ai_concern" class="tall"></textarea></div>
+      <div class="question"><label>試著用幾句話描述自己 / 過去測驗結果（MBTI、星座等） / 最不認識自己的部分</label><textarea data-key="t_self_describe" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱二：我目前在處理的問題</h3>
+      <p class="block-intro">「目前正在處理」就在你眼前，正試著解決。不是過去的傷，不是未來的擔憂，是現在這個禮拜還在卡的事。</p>
+      <div class="question"><label>學業上正在卡的科目或內容 / 卡在哪 / 試過什麼 / 下一步</label><textarea data-key="t_p_study" class="tallest"></textarea></div>
+      <div class="question"><label>升學 / 未來方向上的想法 / 最焦慮的 / 最希望有人告訴你什麼</label><textarea data-key="t_p_future" class="tall"></textarea></div>
+      <div class="question"><label>人際上目前讓你卡住或受傷的關係 / 具體狀況 / 處理方式 / 想要的結果 / 卡點</label><textarea data-key="t_p_relations" class="tallest"></textarea></div>
+      <div class="question"><label>自我懷疑、情緒卡住的事 / 讓你怎麼樣 / 跟誰說過 / 怎麼讓自己好過</label><textarea data-key="t_p_inner" class="tallest"></textarea></div>
+      <div class="question"><label>不能跟別人說的事（這份檔案不會給任何人看）</label><textarea data-key="t_p_secret" class="tall"></textarea></div>
+      <div class="question"><label>上面的問題只能挑三個 AI 馬上幫你處理，挑哪三個？</label><textarea data-key="t_p_priority" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱三：我的處境</h3>
+      <p class="block-intro">處境是你周圍的環境。AI 不知道你家是什麼樣子、你的學校在哪裡。</p>
+      <div class="question"><label>跟家裡每個人的關係描述（爸、媽、兄弟姊妹、長輩）</label><textarea data-key="t_family" class="tallest"></textarea></div>
+      <div class="question"><label>家裡誰最了解你 / 最不了解你 / 絕對不會跟家人說的事</label><textarea data-key="t_family_secret" class="tall"></textarea></div>
+      <div class="question"><label>家裡目前讓你在意的狀況？</label><textarea data-key="t_family_concern"></textarea></div>
+      <div class="question"><label>學校 / 班級的氛圍 / 跟老師的關係 / 班上有讓你不舒服的人嗎</label><textarea data-key="t_school_env" class="tall"></textarea></div>
+      <div class="question"><label>最親近的朋友幾個 / 怎麼認識的 / 跟誰在一起最像「真正的自己」</label><textarea data-key="t_friends" class="tall"></textarea></div>
+      <div class="question"><label>社群媒體使用狀況 / 社群人設跟真實的你差多少</label><textarea data-key="t_social"></textarea></div>
+      <div class="question"><label>一週時間分配（上課、念書、朋友、家人、獨處、滑手機、睡覺）</label><textarea data-key="t_time" class="tall"></textarea></div>
+      <div class="question"><label>哪一項想多一點？哪一項想少一點？為什麼？</label><textarea data-key="t_time_want"></textarea></div>
+      <div class="question"><label>最關注的社會議題 / 最佩服的人 / 生命裡最重要的五件事</label><textarea data-key="t_world" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱四：我想要的 AI</h3>
+      <p class="block-intro">這一塊是你「設計你自己的 AI」。寫得越清楚，AI 就越貼近你。</p>
+      <div class="question"><label>語氣 / 回答長度 / 挑戰程度 / 講錯時希望 AI 怎麼處理</label><textarea data-key="t_ai_style" class="tall"></textarea></div>
+      <div class="question"><label>希望 AI 幫的三件事</label><textarea data-key="t_ai_help" class="tall"></textarea></div>
+      <div class="question"><label>哪些事想自己想清楚，不希望 AI 替你決定</label><textarea data-key="t_ai_nodecide" class="tall"></textarea></div>
+      <div class="question"><label>哪些事不希望 AI 介入</label><textarea data-key="t_ai_nointervene" class="tall"></textarea></div>
+      <div class="question"><label>透過這 10 場直播想得到什麼（一句話）</label><textarea data-key="t_goal"></textarea></div>
+    </div>
+    <div class="layer-actions">
+      <span class="section-progress" data-progress-for="teens">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="teens">尚未儲存</span>
+      <button class="btn" onclick="exportSection('teens', '青少年版')">匯出青少年版</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('teens', '青少年版', {blank:true})">匯出空白模板</button>
+    </div>
+  </div>
+
+  <!-- ADULTS VERSION -->
+  <div class="tab-content" data-content="adults">
+    <div class="block">
+      <h3 class="block-title">基本資料</h3>
+      <div class="question"><label>姓名 / AI 怎麼稱呼你</label><textarea data-key="a_name"></textarea></div>
+      <div class="question"><label>出生年月日（西元）/ 出生時間 / 出生地</label><textarea data-key="a_birth"></textarea></div>
+      <div class="question"><label>目前居住地 / 婚姻狀況 / 是否有小孩 / 同住的人</label><textarea data-key="a_living" class="tall"></textarea></div>
+      <div class="question"><label>用三句話描述「現在的自己」</label><textarea data-key="a_self_three" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱一：我目前的程度</h3>
+      <p class="block-intro">程度不是學歷或職稱，是「我目前真的能做什麼、做到哪個層級」。</p>
+      <div class="question"><label>工作上最強的三項能力 / 最弱會避開的三項</label><textarea data-key="a_work_ability" class="tallest"></textarea></div>
+      <div class="question"><label>別人常稱讚 / 私下批評你工作上哪一點 / 你被低估 / 高估的工作能力</label><textarea data-key="a_work_others" class="tall"></textarea></div>
+      <div class="question"><label>1 到 10 給自己工作表現打幾分？為什麼？</label><textarea data-key="a_work_score"></textarea></div>
+      <div class="question"><label>目前最常用的學習方式 / 正在進行的學習計畫 / 訂閱的內容</label><textarea data-key="a_learn" class="tall"></textarea></div>
+      <div class="question"><label>學新東西最常卡在哪裡？最有效 / 最挫敗的學習經驗</label><textarea data-key="a_learn_exp" class="tall"></textarea></div>
+      <div class="question"><label>用 AI 多久 / 最常用 AI 做什麼（前三項）/ 用過的 AI 工具 / 是否付費訂閱</label><textarea data-key="a_ai_use" class="tall"></textarea></div>
+      <div class="question"><label>自己 AI 使用程度（1 到 10）/ AI 對你的幫助多少（1 到 10）/ 對 AI 最不放心的</label><textarea data-key="a_ai_score" class="tall"></textarea></div>
+      <div class="question"><label>身高體重 / 睡眠 / 運動 / 飲食 / 慢性疾病 / 近一年健康變化</label><textarea data-key="a_health" class="tall"></textarea></div>
+      <div class="question"><label>目前心理狀態（1 到 10）/ 怎麼照顧自己的心 / 諮商或治療經驗 / 服用藥物</label><textarea data-key="a_mental" class="tall"></textarea></div>
+      <div class="question"><label>哪一段時間覺得最像「真正的自己」？</label><textarea data-key="a_real_self"></textarea></div>
+      <div class="question"><label>用幾段話描述自己 / 過去測驗結果（MBTI、Gallup、Big Five 等）/ 最不認識自己的部分</label><textarea data-key="a_self_describe" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱二：我目前在處理的問題</h3>
+      <p class="block-intro">這是 AI 最在意的一塊。「目前正在處理」就在你眼前，正試著解決。寫得越具體，AI 越能幫你。</p>
+      <div class="question"><label>工作問題一：問題、出現多久、影響、試過什麼、卡點、若解決會怎麼變</label><textarea data-key="a_work_p1" class="tallest"></textarea></div>
+      <div class="question"><label>工作問題二：同上結構</label><textarea data-key="a_work_p2" class="tallest"></textarea></div>
+      <div class="question"><label>工作問題三：同上結構</label><textarea data-key="a_work_p3" class="tallest"></textarea></div>
+      <div class="question"><label>伴侶關係上正在處理什麼（單身則寫感情狀態的處理）</label><textarea data-key="a_partner_p" class="tall"></textarea></div>
+      <div class="question"><label>親子關係上正在處理什麼（每個小孩各自狀況）</label><textarea data-key="a_child_p" class="tall"></textarea></div>
+      <div class="question"><label>與父母 / 手足關係上正在處理什麼</label><textarea data-key="a_family_p" class="tall"></textarea></div>
+      <div class="question"><label>其他重要關係上正在處理什麼（朋友、合夥人、貴人、難搞的對象）</label><textarea data-key="a_other_p" class="tall"></textarea></div>
+      <div class="question"><label>自我懷疑、情緒卡住、找不到答案的事 / 讓你怎麼樣 / 怎麼讓自己好過 / 跟誰說過</label><textarea data-key="a_inner_p" class="tallest"></textarea></div>
+      <div class="question"><label>健康上正在處理：身體、心理、精力 / 試過哪些方法</label><textarea data-key="a_health_p" class="tall"></textarea></div>
+      <div class="question"><label>財務上正在處理：收入、支出、資產、保障、退休 / 最讓你睡不著的財務焦慮</label><textarea data-key="a_money_p" class="tall"></textarea></div>
+      <div class="question"><label>不能跟別人說的事（這份檔案不會給任何人看）</label><textarea data-key="a_secret" class="tall"></textarea></div>
+      <div class="question"><label>挑三個 AI 在後面 9 場優先幫你處理的問題</label><textarea data-key="a_priority" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱三：我的處境</h3>
+      <p class="block-intro">處境是你周圍的環境。AI 不知道你的工作場域長什麼樣、你的家是什麼結構。</p>
+      <div class="question"><label>目前的工作：職務、公司（可匿名）、產業、規模、主管、下屬人數、年資</label><textarea data-key="a_job" class="tall"></textarea></div>
+      <div class="question"><label>用 5 到 10 句話描述「一週的工作大概在做什麼」（寫真實做的事）</label><textarea data-key="a_week_work" class="tallest"></textarea></div>
+      <div class="question"><label>跟主管 / 同事 / 下屬的關係（誰是盟友、有距離、敵人）</label><textarea data-key="a_work_relations" class="tall"></textarea></div>
+      <div class="question"><label>工作上最信任的一兩個人 / 工作上頭痛的人</label><textarea data-key="a_work_people"></textarea></div>
+      <div class="question"><label>一天的工作大概從幾點到幾點 / 哪個時段效率最高 / 工作之外處理工作的頻率</label><textarea data-key="a_work_rhythm" class="tall"></textarea></div>
+      <div class="question"><label>過去工作經歷時間順序：時期、職位、做了什麼、為什麼離開、學到什麼</label><textarea data-key="a_career_history" class="tallest"></textarea></div>
+      <div class="question"><label>哪一次職涯決定回頭看是「對的」？「錯的」？</label><textarea data-key="a_career_decisions" class="tall"></textarea></div>
+      <div class="question"><label>原生家庭：父親、母親、兄弟姊妹（在世/已過世，職業，跟你的關係）</label><textarea data-key="a_origin" class="tallest"></textarea></div>
+      <div class="question"><label>童年（5 句話以內）/ 印象最深的家庭事件 / 從原生家庭學到 / 受過的影響</label><textarea data-key="a_childhood" class="tall"></textarea></div>
+      <div class="question"><label>伴侶（認識多久、目前關係狀態、優勢與張力）</label><textarea data-key="a_partner" class="tall"></textarea></div>
+      <div class="question"><label>小孩（每個的年紀、特質、關係狀態、最擔心他什麼）</label><textarea data-key="a_kids" class="tall"></textarea></div>
+      <div class="question"><label>家裡誰最了解你 / 誰最不了解你</label><textarea data-key="a_family_understand"></textarea></div>
+      <div class="question"><label>朋友圈（難過時打給誰）/ 工作以外的師長、貴人 / 跟誰互相虧欠最多 / 想念但失去聯絡的人</label><textarea data-key="a_relationships" class="tall"></textarea></div>
+      <div class="question"><label>平日 / 週末作息 / 一週裡讓你「期待」 / 「害怕」的時段</label><textarea data-key="a_rhythm" class="tall"></textarea></div>
+      <div class="question"><label>主要收入來源 / 月收入 / 年收入 / 副業 / 負債 / 緊急預備金 / 退休準備</label><textarea data-key="a_finance" class="tall"></textarea></div>
+      <div class="question"><label>對財務狀況的整體感受（1 到 10）</label><textarea data-key="a_finance_feel"></textarea></div>
+      <div class="question"><label>價值觀前五排序（家人、伴侶、自由、成就、創造、影響力、安穩、財富、名聲、健康、學習、信仰、正義、樂趣、貢獻、平靜）</label><textarea data-key="a_values" class="tall"></textarea></div>
+      <div class="question"><label>實際時間精力分配跟排序一致嗎？不一致的部分是什麼？為什麼？</label><textarea data-key="a_values_real" class="tall"></textarea></div>
+      <div class="question"><label>最有成就感的三個時刻 / 共同元素是什麼</label><textarea data-key="a_peak" class="tall"></textarea></div>
+      <div class="question"><label>最低潮的兩個時刻 / 是什麼把你拉出來的</label><textarea data-key="a_valley" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱四：我想要的 AI</h3>
+      <p class="block-intro">這一塊是你「設計你自己的 AI」。</p>
+      <div class="question"><label>語氣 / 回答長度 / 挑戰程度 / 講錯時希望 AI 怎麼處理 / 互動頻率</label><textarea data-key="a_ai_style" class="tall"></textarea></div>
+      <div class="question"><label>最具體希望 AI 幫的三件事</label><textarea data-key="a_ai_help" class="tall"></textarea></div>
+      <div class="question"><label>哪些是你的人類獨佔領域，AI 介入會破壞你的核心能力</label><textarea data-key="a_ai_protect" class="tall"></textarea></div>
+      <div class="question"><label>哪些事 AI 做了你會不舒服</label><textarea data-key="a_ai_no" class="tall"></textarea></div>
+      <div class="question"><label>透過這 10 場直播想得到什麼（一句話）</label><textarea data-key="a_goal"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">支柱五：願景與下一步</h3>
+      <div class="question"><label>三年後一切順利的你過著什麼樣的生活（具體一天）</label><textarea data-key="a_3y_good" class="tall"></textarea></div>
+      <div class="question"><label>什麼都沒改變，三年後的你會在哪裡？這個畫面讓你怎麼感覺</label><textarea data-key="a_3y_bad" class="tall"></textarea></div>
+      <div class="question"><label>十年後希望別人怎麼介紹你 / 希望擁有什麼樣的人生</label><textarea data-key="a_10y" class="tall"></textarea></div>
+      <div class="question"><label>90 歲那天回頭看，慶幸自己做了什麼？後悔自己沒做什麼？</label><textarea data-key="a_90y" class="tall"></textarea></div>
+      <div class="question"><label>接下來 12 個月只能完成 3 件事，選哪 3 件</label><textarea data-key="a_year3" class="tall"></textarea></div>
+      <div class="question"><label>3 件裡目前最沒進展的是哪一件？為什麼？</label><textarea data-key="a_year3_stuck" class="tall"></textarea></div>
+    </div>
+    <div class="layer-actions">
+      <span class="section-progress" data-progress-for="adults">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="adults">尚未儲存</span>
+      <button class="btn" onclick="exportSection('adults', '成人版')">匯出成人版</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('adults', '成人版', {blank:true})">匯出空白模板</button>
+    </div>
+  </div>
+</section>
+
+<!-- LAYER 2 -->
+<section id="layer2" class="layer-section l2">
+  <h2 class="section-title">第二層 ‧ 狀態層</h2>
+  <p class="section-sub">你現在處於什麼狀態？同樣的核心檔案，狀態不同，AI 該給的支持完全不同。每季度更新一次。</p>
+
+  <div class="ai-instruction">
+    <h4>給 AI 的使用說明</h4>
+    <ul>
+      <li>請以最新一份狀態層為準。如果跟核心檔案差距很大，以當下狀態層為主。</li>
+      <li>危機中：先接住情緒，不要急著給方案。</li>
+      <li>過渡中：幫他看見方向感，不要急著給答案。</li>
+      <li>平穩中：可以做進階的策略、優化、挑戰。</li>
+      <li>沉澱中：給空間，不要主動給太多。</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">狀態自我評估</h3>
+    <div class="question">
+      <label>我目前的「主要狀態」是（單選）</label>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="radio" name="s_main" value="crisis" data-key="s_main_crisis"><span>危機中 ‧ 剛發生重大事件，情緒激烈</span></label>
+        <label class="checkbox-row"><input type="radio" name="s_main" value="transition" data-key="s_main_transition"><span>過渡中 ‧ 人生階段在轉折，方向不確定</span></label>
+        <label class="checkbox-row"><input type="radio" name="s_main" value="steady" data-key="s_main_steady"><span>平穩中 ‧ 相對穩定，想要優化精進</span></label>
+        <label class="checkbox-row"><input type="radio" name="s_main" value="reflect" data-key="s_main_reflect"><span>沉澱中 ‧ 休息或反思階段</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">如果你勾了「危機中」</h3>
+    <div class="question"><label>發生了什麼事？事件多久了？</label><textarea data-key="s_crisis_what" class="tall"></textarea></div>
+    <div class="question"><label>目前最強烈的情緒是？（焦慮、憤怒、悲傷、麻木、恐懼、其他）</label><textarea data-key="s_crisis_emotion"></textarea></div>
+    <div class="question"><label>最需要 AI 怎麼接住你？最不希望 AI 做什麼？</label><textarea data-key="s_crisis_ai" class="tall"></textarea></div>
+    <div class="question"><label>目前的求助系統有誰？需要 AI 幫你判斷「什麼時候該找專業人士」嗎？</label><textarea data-key="s_crisis_help" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">如果你勾了「過渡中」</h3>
+    <div class="question"><label>從什麼，到什麼的過渡？開始多久了？預計還要多久？</label><textarea data-key="s_trans_what" class="tall"></textarea></div>
+    <div class="question"><label>這個過渡是主動選的，還是被動發生的？</label><textarea data-key="s_trans_choice"></textarea></div>
+    <div class="question"><label>最焦慮的是什麼？最期待的是什麼？</label><textarea data-key="s_trans_feel" class="tall"></textarea></div>
+    <div class="question"><label>希望 AI 怎麼陪你？過渡期間有可以依靠的人嗎？</label><textarea data-key="s_trans_ai" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">如果你勾了「平穩中」</h3>
+    <div class="question"><label>想優化的部分是什麼？（最多三個）預計花多久？</label><textarea data-key="s_steady_what" class="tall"></textarea></div>
+    <div class="question"><label>想要 AI 怎麼幫你？</label><textarea data-key="s_steady_ai"></textarea></div>
+    <div class="question"><label>目前最大的「隱性風險」是什麼？（誠實寫下你「知道但不想處理」的事）</label><textarea data-key="s_steady_risk" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">如果你勾了「沉澱中」</h3>
+    <div class="question"><label>你目前在沉澱什麼？是有意識選擇還是身體要求的？</label><textarea data-key="s_reflect_what" class="tall"></textarea></div>
+    <div class="question"><label>需要這個沉澱多久？希望 AI 在這段時間怎麼配合？</label><textarea data-key="s_reflect_ai" class="tall"></textarea></div>
+    <div class="question"><label>沉澱結束後，你想往哪個方向？</label><textarea data-key="s_reflect_after"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">通用問題（無論狀態都要回答）</h3>
+    <div class="question"><label>填寫今天，用一句話描述你「今天的感受」</label><textarea data-key="s_today"></textarea></div>
+    <div class="question"><label>接下來一週，最大的挑戰是？最期待的事是？</label><textarea data-key="s_week" class="tall"></textarea></div>
+    <div class="question"><label>如果今天就要做一個重要的決定，你的「清晰度」有幾分（1 到 10）？</label><textarea data-key="s_clarity"></textarea></div>
+  </div>
+
+  <div class="layer-actions">
+    <span class="section-progress" data-progress-for="state">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="state">尚未儲存</span>
+    <button class="btn" onclick="exportSection('state', '狀態層')">匯出狀態層</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('state', '狀態層', {blank:true})">匯出空白模板</button>
+  </div>
+</section>
+
+<!-- LAYER 3 -->
+<section id="layer3" class="layer-section l3">
+  <h2 class="section-title">第三層 ‧ 目的模組</h2>
+  <p class="section-sub">當你想要 AI 在某個領域深入幫你，加上對應模組。每個模組都是獨立的迷你檔案。v1.0 提供三個。</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="career">職涯模組</button>
+    <button class="tab-btn" data-tab="parenting">親職模組</button>
+    <button class="tab-btn" data-tab="decision">重大決定模組</button>
+  </div>
+
+  <!-- CAREER -->
+  <div class="tab-content active" data-content="career">
+    <div class="ai-instruction">
+      <h4>給 AI 的使用說明（職涯模組）</h4>
+      <ul>
+        <li>學員正在針對職涯做深入工作。優先用這份模組的資訊分析他的職涯狀況。</li>
+        <li>職涯議題涉及生計，請慎重。不要過度樂觀，也不要過度保守。</li>
+        <li>如果學員在情緒激烈狀態下做職涯決定，建議他先沉澱兩週再決定。</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你的職涯故事</h3>
+      <div class="question"><label>用 5 到 10 句話講你的職涯故事（不是寫履歷，是寫故事）</label><textarea data-key="c_story" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">職涯軌跡與關鍵時刻</h3>
+      <div class="question"><label>過去工作經歷（時期、公司、職位、為什麼進去、做了什麼、為什麼離開、學到什麼）</label><textarea data-key="c_history" class="tallest"></textarea></div>
+      <div class="question"><label>哪一次職涯決定回頭看是「對的」？「錯的」？「沒做的」現在後悔的？</label><textarea data-key="c_decisions" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">能力深度盤點</h3>
+      <div class="question"><label>核心專業能力（最多 3 個，寫得具體）/ 軟實力</label><textarea data-key="c_skills" class="tall"></textarea></div>
+      <div class="question"><label>最常被找去解決什麼問題？最常被「跳過」的場合是什麼？</label><textarea data-key="c_role"></textarea></div>
+      <div class="question"><label>業界專業的「下一個層級」對你是什麼？需要什麼才能到那一層？</label><textarea data-key="c_next"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">職涯關係網</h3>
+      <div class="question"><label>直屬主管 / 跨部門合作對象 / 業界 mentor / 同儕 / 帶的團隊</label><textarea data-key="c_network" class="tallest"></textarea></div>
+      <div class="question"><label>職場上最信任的一兩個人 / 頭痛但必須合作的人 / 最想接近但還沒接近的人</label><textarea data-key="c_key_people" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">職涯瓶頸</h3>
+      <div class="question"><label>目前的職涯瓶頸是什麼？出現多久了？試過哪些方式？真正卡住的是什麼？</label><textarea data-key="c_bottleneck" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">職涯願景</h3>
+      <div class="question"><label>三年後 / 五年後 / 十年後希望自己在職涯上的位置</label><textarea data-key="c_vision" class="tall"></textarea></div>
+      <div class="question"><label>不考慮現實，最想做什麼？為什麼？</label><textarea data-key="c_dream"></textarea></div>
+      <div class="question"><label>願意付出什麼代價？絕對不願付出什麼？</label><textarea data-key="c_cost" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">職涯隱藏議題</h3>
+      <div class="question"><label>是否曾被工作傷害過？這些經驗如何影響你現在對工作的態度？</label><textarea data-key="c_wounds" class="tall"></textarea></div>
+      <div class="question"><label>對「成功」的定義是什麼？這個定義從哪裡來？</label><textarea data-key="c_success"></textarea></div>
+      <div class="question"><label>會羨慕別人的職涯嗎？是誰？哪一點？</label><textarea data-key="c_envy"></textarea></div>
+      <div class="question"><label>職涯有沒有什麼是「家人不知道」的？</label><textarea data-key="c_secret"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你跟金錢的關係</h3>
+      <div class="question"><label>目前薪資水平相對業界 / 是否滿意 / 比收入更重要的是什麼 / 願意接受多大不適換多少收入</label><textarea data-key="c_money" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">想透過 AI 做的事</h3>
+      <div class="question"><label>最想 AI 幫你的三件職涯相關事項</label><textarea data-key="c_ai_help" class="tall"></textarea></div>
+      <div class="question"><label>絕對不希望 AI 介入的職涯決定</label><textarea data-key="c_ai_no" class="tall"></textarea></div>
+    </div>
+    <div class="layer-actions">
+      <span class="section-progress" data-progress-for="career">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="career">尚未儲存</span>
+      <button class="btn" onclick="exportSection('career', '職涯模組')">匯出職涯模組</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('career', '職涯模組', {blank:true})">匯出空白模板</button>
+    </div>
+  </div>
+
+  <!-- PARENTING -->
+  <div class="tab-content" data-content="parenting">
+    <div class="ai-instruction">
+      <h4>給 AI 的使用說明（親職模組）</h4>
+      <ul>
+        <li>一個小孩一份。如果家長提到「孩子」，請確認是哪一個。</li>
+        <li>教養沒有標準答案。請避免「正確的做法是」這種絕對句。</li>
+        <li>涉及孩子安全的議題（受虐、自殘、嚴重情緒、發展問題），請建議找專業。</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個孩子的基本資料</h3>
+      <div class="question"><label>孩子的名字 / 出生年月日 / 目前年級 / 學校類型 / 家中排行</label><textarea data-key="p_basic" class="tall"></textarea></div>
+      <div class="question"><label>用三句話描述「這個孩子是什麼樣的人」</label><textarea data-key="p_describe" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個孩子的特質與能力</h3>
+      <div class="question"><label>氣質 / 最強的三個能力或特質 / 最弱、最需要支持的部分</label><textarea data-key="p_traits" class="tall"></textarea></div>
+      <div class="question"><label>老師最常稱讚什麼？最常擔心什麼？</label><textarea data-key="p_teacher"></textarea></div>
+      <div class="question"><label>最特別的興趣是什麼？讓你最感動的一件事？</label><textarea data-key="p_interest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個孩子的人際</h3>
+      <div class="question"><label>學校的朋友狀況 / 跟兄弟姊妹的關係 / 跟長輩的關係</label><textarea data-key="p_relations" class="tall"></textarea></div>
+      <div class="question"><label>有沒有讓你擔心的人際狀況？</label><textarea data-key="p_concern_relations"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你跟這個孩子的關係</h3>
+      <div class="question"><label>目前的關係狀態（1 到 10）/ 最常做的活動 / 最常吵的事</label><textarea data-key="p_relation" class="tall"></textarea></div>
+      <div class="question"><label>最享受跟他相處的時刻？最焦慮的相處時刻？</label><textarea data-key="p_moments" class="tall"></textarea></div>
+      <div class="question"><label>他會跟你講心事嗎？什麼會講？什麼不會？你跟另一半誰跟他比較親？</label><textarea data-key="p_intimacy" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個孩子目前在處理的議題</h3>
+      <div class="question"><label>學業 / 人際 / 身體健康 / 情緒心理 / 家庭關係 / 3C 與網路</label><textarea data-key="p_issues" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你目前在處理的「跟這個孩子有關的問題」</h3>
+      <div class="question"><label>問題一、問題二、問題三</label><textarea data-key="p_my_issues" class="tallest"></textarea></div>
+      <div class="question"><label>最想跟這個孩子修復或加深的部分是什麼？</label><textarea data-key="p_repair"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你對這個孩子的願景</h3>
+      <div class="question"><label>希望他長大成為什麼樣的人？擁有什麼樣的人生？</label><textarea data-key="p_vision" class="tall"></textarea></div>
+      <div class="question"><label>絕對不希望他變成什麼樣？</label><textarea data-key="p_avoid"></textarea></div>
+      <div class="question"><label>願意為他付出什麼？絕對不願付出什麼？最害怕對他做錯什麼？</label><textarea data-key="p_cost" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你的教養信念</h3>
+      <div class="question"><label>最信任的教養理念是哪一派？跟另一半最大的分歧是什麼？</label><textarea data-key="p_belief" class="tall"></textarea></div>
+      <div class="question"><label>父母對你的方式裡，你「絕對不要」也用在孩子身上的？「也想」用的？</label><textarea data-key="p_inherit" class="tall"></textarea></div>
+      <div class="question"><label>目前的教養盲點，你自己知道是什麼嗎？</label><textarea data-key="p_blind"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個孩子的 AI 使用狀況</h3>
+      <div class="question"><label>孩子目前是否用 AI？用 AI 做什麼？你的態度？最擔心的部分？希望孩子怎麼用 AI？</label><textarea data-key="p_ai" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">想透過 AI 做的事</h3>
+      <div class="question"><label>最想 AI 幫你的三件事</label><textarea data-key="p_ai_help" class="tall"></textarea></div>
+      <div class="question"><label>絕對不希望 AI 替你做的事</label><textarea data-key="p_ai_no" class="tall"></textarea></div>
+    </div>
+    <div class="layer-actions">
+      <span class="section-progress" data-progress-for="parenting">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="parenting">尚未儲存</span>
+      <button class="btn" onclick="exportSection('parenting', '親職模組')">匯出親職模組</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('parenting', '親職模組', {blank:true})">匯出空白模板</button>
+    </div>
+  </div>
+
+  <!-- DECISION -->
+  <div class="tab-content" data-content="decision">
+    <div class="ai-instruction">
+      <h4>給 AI 的使用說明（重大決定模組）</h4>
+      <ul>
+        <li>不要急著給建議。先幫他把決定的所有面向看清楚。</li>
+        <li>質疑他可能沒看到的盲點。提供他可能沒考慮過的選項。</li>
+        <li>最後的決定權永遠在他自己手上。</li>
+        <li>如果他在情緒激烈狀態下，建議他先沉澱再決定。</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個決定是什麼</h3>
+      <div class="question"><label>用一句話描述這個決定</label><textarea data-key="d_what"></textarea></div>
+      <div class="question"><label>選項有哪些？（至少寫兩個，最好三到四個）</label><textarea data-key="d_options" class="tall"></textarea></div>
+      <div class="question"><label>什麼時候必須做出決定？做出後多久內可以反悔？</label><textarea data-key="d_time"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個決定的觸發</h3>
+      <div class="question"><label>是什麼讓你必須面對這個決定？主動還是被動？想做這個決定多久了？</label><textarea data-key="d_trigger" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">每個選項的盤點</h3>
+      <div class="question"><label>選項 A：具體內容、優點、缺點、最壞情況、最好情況、直覺反應、身邊的人怎麼看</label><textarea data-key="d_a" class="tallest"></textarea></div>
+      <div class="question"><label>選項 B：（同上結構）</label><textarea data-key="d_b" class="tallest"></textarea></div>
+      <div class="question"><label>選項 C（如有）：（同上結構）</label><textarea data-key="d_c" class="tallest"></textarea></div>
+      <div class="question"><label>選項 D（如有）：（同上結構）</label><textarea data-key="d_d" class="tallest"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你真正在意的是什麼</h3>
+      <div class="question"><label>做對了，最希望得到的三件事</label><textarea data-key="d_win" class="tall"></textarea></div>
+      <div class="question"><label>做錯了，最害怕失去的三件事</label><textarea data-key="d_lose" class="tall"></textarea></div>
+      <div class="question"><label>「對」跟「錯」的判準對你而言是什麼？</label><textarea data-key="d_criteria"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">影響這個決定的人</h3>
+      <div class="question"><label>會影響哪些人？每個人對這個決定的態度？</label><textarea data-key="d_people" class="tall"></textarea></div>
+      <div class="question"><label>讓某人失望或受傷你能承受嗎？哪些人一定要徵詢？哪些人絕對不會告訴？為什麼？</label><textarea data-key="d_people_who" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">你的真實狀態</h3>
+      <div class="question"><label>目前情緒狀態（1 到 10）/ 最近一週睡眠 / 是否在情緒激烈中 / 是否被某事件驅動</label><textarea data-key="d_state" class="tall"></textarea></div>
+      <div class="question"><label>願不願意先沉澱兩週再做決定？為什麼可以或為什麼不可以？</label><textarea data-key="d_pause"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">可能的盲點</h3>
+      <div class="question"><label>過去做類似決定的經驗是什麼？結果如何？身邊的人警告過你會踩進什麼坑？</label><textarea data-key="d_blind" class="tall"></textarea></div>
+      <div class="question"><label>心裡其實偷偷想避開的選項？為什麼避？</label><textarea data-key="d_avoid"></textarea></div>
+      <div class="question"><label>五年前的自己 / 十年後的自己會怎麼看這個決定？</label><textarea data-key="d_time_self" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">可能還沒看見的選項</h3>
+      <div class="question"><label>還有沒有可能存在但還沒想到的第五、第六個選項？</label><textarea data-key="d_more" class="tall"></textarea></div>
+      <div class="question"><label>如果什麼都不做，會發生什麼？如果有完全的資源 / 自由，會選什麼？</label><textarea data-key="d_freedom" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">這個決定背後的「真正問題」</h3>
+      <div class="question"><label>這個決定背後，你真正在處理的是什麼？（例：以為在選工作，其實在處理「我想被認可」）</label><textarea data-key="d_real" class="tall"></textarea></div>
+    </div>
+    <div class="block">
+      <h3 class="block-title">想透過 AI 做的事</h3>
+      <div class="question"><label>希望 AI 幫你做什麼？絕對不希望 AI 做什麼？</label><textarea data-key="d_ai" class="tall"></textarea></div>
+    </div>
+    <div class="layer-actions">
+      <span class="section-progress" data-progress-for="decision">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="decision">尚未儲存</span>
+      <button class="btn" onclick="exportSection('decision', '重大決定模組')">匯出重大決定模組</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('decision', '重大決定模組', {blank:true})">匯出空白模板</button>
+    </div>
+  </div>
+</section>
+
+<!-- LAYER 4 -->
+<section id="layer4" class="layer-section l4">
+  <h2 class="section-title">第四層 ‧ 關係檔案</h2>
+  <p class="section-sub">兩個人共同填寫。讓 AI 認識「你跟你的伴侶」這個關係，而不只是兩個獨立的人。前提：兩人都先填完自己的核心檔案。</p>
+
+  <div class="ai-instruction">
+    <h4>給 AI 的使用說明（伴侶共享版）</h4>
+    <ul>
+      <li>同時擁有雙方的視角，不要偏袒任何一方。</li>
+      <li>翻譯彼此的差異，而不是判斷對錯。</li>
+      <li>不要替他們做關係決定（結婚、離婚、生子、分手）。</li>
+      <li>如果出現傷害、虐待、外遇、自殺意念等敏感訊號，請直接建議找專業諮商。</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">基本資料</h3>
+    <div class="question"><label>甲方的名字 / 乙方的名字（AI 怎麼稱呼）</label><textarea data-key="r_names"></textarea></div>
+    <div class="question"><label>兩人核心檔案連結 / 認識多久 / 在一起多久 / 同居或結婚多久 / 是否有共同小孩</label><textarea data-key="r_basic" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">你們的關係故事</h3>
+    <div class="question"><label>怎麼認識的 / 什麼時候開始變嚴肅 / 三個重要轉折點 / 一起經歷過的最大風暴</label><textarea data-key="r_story" class="tallest"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">甲方的視角（單獨填，不要互相看）</h3>
+    <div class="question"><label>關係優勢 / 關係張力</label><textarea data-key="r_a_strength" class="tall"></textarea></div>
+    <div class="question"><label>最珍惜的時刻 / 最受傷的時刻</label><textarea data-key="r_a_moments" class="tall"></textarea></div>
+    <div class="question"><label>對方最不了解我的部分 / 我最不了解對方的部分</label><textarea data-key="r_a_understand" class="tall"></textarea></div>
+    <div class="question"><label>最希望被看見的 / 最害怕的 / 對方明天消失最後悔沒做的事</label><textarea data-key="r_a_deep" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">乙方的視角（單獨填）</h3>
+    <div class="question"><label>關係優勢 / 關係張力</label><textarea data-key="r_b_strength" class="tall"></textarea></div>
+    <div class="question"><label>最珍惜的時刻 / 最受傷的時刻</label><textarea data-key="r_b_moments" class="tall"></textarea></div>
+    <div class="question"><label>對方最不了解我的部分 / 我最不了解對方的部分</label><textarea data-key="r_b_understand" class="tall"></textarea></div>
+    <div class="question"><label>最希望被看見的 / 最害怕的 / 對方明天消失最後悔沒做的事</label><textarea data-key="r_b_deep" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">關係動態（兩人一起填）</h3>
+    <div class="question"><label>最常吵的事 / 吵架模式 / 和好方式</label><textarea data-key="r_fight" class="tall"></textarea></div>
+    <div class="question"><label>最困難的議題 / 最有共識的事</label><textarea data-key="r_topics" class="tall"></textarea></div>
+    <div class="question"><label>各自負責的事（家務、財務、決定、社交、教養）</label><textarea data-key="r_roles" class="tall"></textarea></div>
+    <div class="question"><label>親密狀態（性、肢體接觸、情感親近）</label><textarea data-key="r_intimacy"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">關係處境</h3>
+    <div class="question"><label>居住狀況 / 財務狀況（誰賺多少、誰管錢）/ 跟雙方家人的關係 / 社交圈</label><textarea data-key="r_context" class="tallest"></textarea></div>
+    <div class="question"><label>最近一年最大的關係事件</label><textarea data-key="r_recent"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">在處理的關係問題</h3>
+    <div class="question"><label>問題一：雙方各自怎麼看 / 試過什麼 / 卡在哪 / 想要的結果</label><textarea data-key="r_p1" class="tallest"></textarea></div>
+    <div class="question"><label>問題二（同上結構）</label><textarea data-key="r_p2" class="tallest"></textarea></div>
+    <div class="question"><label>問題三（同上結構）</label><textarea data-key="r_p3" class="tallest"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">關係願景</h3>
+    <div class="question"><label>三年後 / 五年後 / 十年後希望關係是什麼樣子？最害怕變成什麼樣？</label><textarea data-key="r_vision" class="tall"></textarea></div>
+    <div class="question"><label>各自為這段關係最願意付出什麼？最不願意付出什麼？</label><textarea data-key="r_cost" class="tall"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">想透過 AI 做的事</h3>
+    <div class="question"><label>希望 AI 在哪些情境幫你們（吵架時、共同決定時、親職分歧時、規劃未來時、情緒卡住時、重大事件時）</label><textarea data-key="r_ai_help" class="tallest"></textarea></div>
+    <div class="question"><label>關係裡 AI 絕對不能介入的事 / 不希望 AI 幫忙傳遞訊息 / 不希望 AI 替任何一方說話</label><textarea data-key="r_ai_no" class="tall"></textarea></div>
+    <div class="question"><label>如果一方私下諮詢「另一半是不是有問題」，希望 AI 怎麼處理？</label><textarea data-key="r_ai_private"></textarea></div>
+  </div>
+
+  <div class="block">
+    <h3 class="block-title">給未來的我們</h3>
+    <div class="question"><label>甲方寫給五年後的我們</label><textarea data-key="r_a_future" class="tallest"></textarea></div>
+    <div class="question"><label>乙方寫給五年後的我們</label><textarea data-key="r_b_future" class="tallest"></textarea></div>
+  </div>
+
+  <div class="layer-actions">
+    <span class="section-progress" data-progress-for="couple">進度 <span class="pct">0%</span>（0/0）</span>
+      <span class="save-status" data-status="couple">尚未儲存</span>
+    <button class="btn" onclick="exportSection('couple', '伴侶共享版')">匯出伴侶共享版</button>
+      <button class="btn" style="background:transparent;color:var(--navy);border:1px solid var(--border-strong);" onclick="exportSection('couple', '伴侶共享版', {blank:true})">匯出空白模板</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <p style="font-size:18px;color:var(--gold-light);letter-spacing:0.2em;margin-bottom:16px;font-weight:600;">KIAO ‧ 總校長的 AI 教育寶典</p>
+  <p>P0 系統 ‧ 第零號個人系統 ‧ v1.0</p>
+  <p>本系統是「總校長的 AI 教育寶典」10 場直播系列的核心工具</p>
+  <p class="pathfinder">設計者 ‧ 海碩 ‧ Pathfinder</p>
+</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.layer-section').forEach(section => {
+    const tabs = section.querySelectorAll('.tab-btn');
+    const contents = section.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        section.querySelector(`.tab-content[data-content="${target}"]`).classList.add('active');
+      });
+    });
+  });
+
+  const STORAGE_KEY = 'p0_system_filler_v1';
+  let saveTimer = null;
+
+  const SECTIONS = [
+    { id: 'kids', title: '小孩版', selector: '[data-content="kids"]', status: 'kids' },
+    { id: 'teens', title: '青少年版', selector: '[data-content="teens"]', status: 'teens' },
+    { id: 'adults', title: '成人版', selector: '[data-content="adults"]', status: 'adults' },
+    { id: 'state', title: '狀態層', selector: '#layer2', status: 'state' },
+    { id: 'career', title: '職涯模組', selector: '[data-content="career"]', status: 'career' },
+    { id: 'parenting', title: '親職模組', selector: '[data-content="parenting"]', status: 'parenting' },
+    { id: 'decision', title: '重大決定模組', selector: '[data-content="decision"]', status: 'decision' },
+    { id: 'couple', title: '伴侶共享版', selector: '#layer4', status: 'couple' }
+  ];
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('show'), 3200);
+  }
+
+  function getImportMode() {
+    const checked = document.querySelector('input[name="importMode"]:checked');
+    return checked ? checked.value : 'merge';
+  }
+
+  function collectData() {
+    const data = {};
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const key = el.dataset.key;
+      if (el.type === 'radio' || el.type === 'checkbox') {
+        if (el.checked) data[key] = true;
+      } else if (el.value && el.value.trim()) {
+        data[key] = el.value;
+      }
+    });
+    return data;
+  }
+
+  function applyData(data, mode = 'overwrite') {
+    let filled = 0;
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const key = el.dataset.key;
+      if (!(key in data)) return;
+      if (el.type === 'radio' || el.type === 'checkbox') {
+        if (mode === 'merge' && el.checked) return;
+        el.checked = !!data[key];
+        filled++;
+      } else {
+        if (mode === 'merge' && el.value && el.value.trim()) return;
+        el.value = data[key] == null ? '' : String(data[key]);
+        filled++;
+      }
+    });
+    return filled;
+  }
+
+  function loadAll() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      applyData(data, 'overwrite');
+    } catch (e) { console.error('Load failed', e); }
+  }
+
+  function saveAll() {
+    const data = collectData();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const stamp = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+    document.querySelectorAll('.save-status').forEach(s => {
+      s.textContent = '已自動儲存於瀏覽器 ‧ ' + stamp;
+      s.classList.add('saved');
+    });
+    updateProgress();
+  }
+
+  document.addEventListener('input', e => {
+    if (e.target.matches('[data-key]')) {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveAll, 500);
+      updateProgress();
+    }
+  });
+  document.addEventListener('change', e => {
+    if (e.target.matches('[data-key]')) {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveAll, 500);
+      updateProgress();
+    }
+  });
+
+  function fieldFilled(el) {
+    if (el.type === 'radio' || el.type === 'checkbox') return el.checked;
+    return !!(el.value && el.value.trim());
+  }
+
+  function sectionStats(root) {
+    const fields = [...root.querySelectorAll('[data-key]')];
+    // For radio groups, count unique name-like keys: each data-key separately as in original
+    const total = fields.length;
+    const done = fields.filter(fieldFilled).length;
+    return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
+  }
+
+  function updateProgress() {
+    let allDone = 0, allTotal = 0;
+    SECTIONS.forEach(sec => {
+      const root = document.querySelector(sec.selector);
+      if (!root) return;
+      const { total, done, pct } = sectionStats(root);
+      allDone += done;
+      allTotal += total;
+      const chip = document.querySelector(`[data-progress-for="${sec.status}"]`);
+      if (chip) {
+        chip.innerHTML = `進度 <span class="pct">${pct}%</span>（${done}/${total}）`;
+      }
+    });
+    const gp = document.getElementById('globalProgress');
+    const gpct = allTotal ? Math.round(allDone / allTotal * 100) : 0;
+    if (gp) gp.innerHTML = `整體進度 <strong>${gpct}%</strong>（${allDone}/${allTotal}）`;
+  }
+
+  function buildMarkdown(root, title, { blank = false } = {}) {
+    let md = `# P0 系統 ‧ ${title}\n\n`;
+    md += `> 匯出日期：${new Date().toLocaleString('zh-TW')}\n`;
+    md += `> 類型：${blank ? '空白模板（填完後可再匯入）' : '已填內容'}\n\n---\n\n`;
+
+    root.querySelectorAll('.block').forEach(block => {
+      const blockTitle = block.querySelector('.block-title');
+      const intro = block.querySelector('.block-intro');
+      if (blockTitle) md += `\n## ${blockTitle.textContent.trim()}\n\n`;
+      if (intro) md += `> ${intro.textContent.trim()}\n\n`;
+
+      block.querySelectorAll('.question').forEach(q => {
+        const label = q.querySelector('label');
+        if (label) md += `### ${label.textContent.trim()}\n\n`;
+
+        const textarea = q.querySelector('textarea[data-key]');
+        if (textarea) {
+          md += `<!-- key:${textarea.dataset.key} -->\n`;
+          if (!blank && textarea.value.trim()) {
+            md += `${textarea.value.trim()}\n\n`;
+          } else {
+            md += `\n\n`;
+          }
+        }
+
+        const checkboxes = q.querySelectorAll('input[type="radio"][data-key], input[type="checkbox"][data-key]');
+        checkboxes.forEach(cb => {
+          const span = cb.parentElement.querySelector('span');
+          const text = span ? span.textContent.trim() : cb.value;
+          const checked = !blank && cb.checked;
+          md += `- [${checked ? 'x' : ' '}] ${text} <!-- key:${cb.dataset.key} -->\n`;
+        });
+        if (checkboxes.length > 0) md += '\n';
+      });
+    });
+
+    md += `\n---\n\n_由 P0 系統填寫器匯出 ‧ 題目來源：HSAILEARNING P0 系統_\n`;
+    return md;
+  }
+
+  function downloadText(filename, text, mime) {
+    const blob = new Blob([text], { type: mime || 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function dateStamp() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function exportSection(section, title, opts = {}) {
+    const meta = SECTIONS.find(s => s.id === section);
+    const root = document.querySelector(meta ? meta.selector : null);
+    if (!root) return;
+    const blank = !!opts.blank;
+    const md = buildMarkdown(root, title, { blank });
+    const prefix = blank ? '空白模板' : '已填';
+    downloadText(`P0系統_${prefix}_${title}_${dateStamp()}.md`, md);
+    if (!opts.silent) toast(`已匯出：${title}`);
+  }
+
+  async function exportBlankTemplates() {
+    toast('開始下載空白模板（共 8 個檔）…');
+    for (const sec of SECTIONS) {
+      exportSection(sec.id, sec.title, { blank: true, silent: true });
+      await new Promise(r => setTimeout(r, 280));
+    }
+    toast('空白模板已全部下載');
+  }
+
+  async function exportAllFilled() {
+    toast('開始批次匯出已填內容…');
+    let n = 0;
+    for (const sec of SECTIONS) {
+      const root = document.querySelector(sec.selector);
+      if (!root) continue;
+      const { done } = sectionStats(root);
+      if (done === 0) continue;
+      exportSection(sec.id, sec.title, { blank: false, silent: true });
+      n++;
+      await new Promise(r => setTimeout(r, 280));
+    }
+    toast(n ? `已匯出 ${n} 個有內容的模組` : '目前沒有已填內容可匯出');
+  }
+
+  function exportJsonBackup() {
+    const payload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      source: 'p0-system-filler',
+      data: collectData()
+    };
+    downloadText(
+      `P0系統_JSON備份_${dateStamp()}.json`,
+      JSON.stringify(payload, null, 2),
+      'application/json;charset=utf-8'
+    );
+    toast('已匯出 JSON 備份');
+  }
+
+  function importJsonBackup(event) {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        const data = parsed.data || parsed;
+        const mode = getImportMode();
+        const n = applyData(data, mode);
+        saveAll();
+        toast(`JSON 匯入完成（寫入 ${n} 欄，模式：${mode === 'merge' ? '只填空白' : '覆寫'}）`);
+      } catch (e) {
+        console.error(e);
+        toast('JSON 匯入失敗：格式不正確');
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  function parseMarkdownToAnswers(md) {
+    const answers = {};
+    // Checkbox lines with key
+    const cbRe = /^- \[(x|X| )\]\s+.*?<!--\s*key:([a-zA-Z0-9_]+)\s*-->/gm;
+    let m;
+    while ((m = cbRe.exec(md)) !== null) {
+      if (m[1].toLowerCase() === 'x') answers[m[2]] = true;
+    }
+
+    // Textarea blocks: <!-- key:xxx --> then content until next heading/key/hr
+    const keyRe = /<!--\s*key:([a-zA-Z0-9_]+)\s*-->/g;
+    const keys = [...md.matchAll(keyRe)];
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i][1];
+      // skip if this key belongs to a checkbox line
+      const lineStart = md.lastIndexOf('\n', keys[i].index) + 1;
+      const line = md.slice(lineStart, md.indexOf('\n', keys[i].index));
+      if (/^- \[/.test(line)) continue;
+
+      const start = keys[i].index + keys[i][0].length;
+      const end = i + 1 < keys.length ? keys[i + 1].index : md.length;
+      let body = md.slice(start, end);
+      // stop at next ## or ### or --- footer
+      body = body.split(/\n(?=### |\n## |^## |^### |^---)/m)[0];
+      body = body.replace(/^\n+/, '').replace(/\n+$/, '');
+      // remove trailing --- footer pieces if any
+      body = body.replace(/\n---[\s\S]*$/, '').trim();
+      if (body) answers[key] = body;
+    }
+    return answers;
+  }
+
+  async function importMarkdownFiles(event) {
+    const files = [...(event.target.files || [])];
+    event.target.value = '';
+    if (!files.length) return;
+    const mode = getImportMode();
+    let totalKeys = 0;
+    for (const file of files) {
+      const text = await file.text();
+      const answers = parseMarkdownToAnswers(text);
+      totalKeys += Object.keys(answers).length;
+      applyData(answers, mode);
+    }
+    saveAll();
+    toast(`已匯入 ${files.length} 個 Markdown（解析到 ${totalKeys} 個欄位，模式：${mode === 'merge' ? '只填空白' : '覆寫'}）`);
+  }
+
+  // init
+  loadAll();
+  updateProgress();
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if (Object.keys(data).length > 0) {
+    document.querySelectorAll('.save-status').forEach(s => {
+      s.textContent = '上次儲存的內容已載入';
+      s.classList.add('saved');
+    });
+  }
+</script>
+<div class="toast" id="toast"></div>
+</body>
+</html>
