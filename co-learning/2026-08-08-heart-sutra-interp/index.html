@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIAO 共學｜心經詮釋層 · 分享＋漢梵對照</title>
+<style>
+  :root {
+    --navy: #1a2b4a;
+    --navy-light: #2c4368;
+    --gold: #c89a3e;
+    --gold-light: #e0b568;
+    --teal: #2d6e7e;
+    --bg: #faf8f3;
+    --card: #fff;
+    --text: #1a1a1a;
+    --soft: #555;
+    --muted: #888;
+    --border: #e8e4dc;
+    --ok: #2d6e7e;
+    --warn: #7d6233;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .course-banner {
+    background: var(--gold);
+    color: var(--navy);
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .course-banner .kiao {
+    font-weight: 800;
+    margin-right: 10px;
+    padding-right: 12px;
+    border-right: 1px solid rgba(26,43,74,.35);
+    letter-spacing: 0.18em;
+  }
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--navy);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  }
+  .top-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 20px 10px;
+  }
+  .brand {
+    color: var(--gold-light);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  .brand span { color: #fff; font-weight: 500; opacity: .85; margin-left: 8px; font-size: 13px; }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    appearance: none;
+    border: 1px solid transparent;
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .tab:hover { background: rgba(255,255,255,.14); }
+  .tab.active {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .jump {
+    display: none;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .jump.show { display: flex; }
+  .jump a {
+    color: #dce7f5;
+    text-decoration: none;
+    font-size: 12px;
+    border: 1px solid rgba(255,255,255,.2);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .jump a:hover { border-color: var(--gold-light); color: var(--gold-light); }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  h1 {
+    font-size: 1.55rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 1.2rem;
+    color: var(--navy);
+    margin: 28px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--gold);
+  }
+  h3 {
+    font-size: 1.05rem;
+    color: var(--teal);
+    margin: 18px 0 8px;
+  }
+  p, li { color: var(--text); }
+  .lede {
+    color: var(--soft);
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin: 12px 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,.02);
+  }
+  .time {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--gold-light);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-right: 8px;
+  }
+  .quote {
+    border-left: 4px solid var(--gold);
+    background: #fffaf0;
+    padding: 12px 14px;
+    margin: 10px 0;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .discord {
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    background: #f4f1ea;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+  }
+  ul { padding-left: 1.2em; margin: 8px 0; }
+  li { margin: 4px 0; }
+  .pill {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-right: 6px;
+  }
+  .pill.agree { background: #e5f3f4; color: var(--teal); }
+  .pill.disagree { background: #f7efe3; color: var(--warn); }
+  .pill.use { background: #eef1f7; color: var(--navy); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--card);
+    margin: 10px 0 18px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    vertical-align: top;
+    text-align: left;
+  }
+  th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  tr:nth-child(even) td { background: #fcfbf8; }
+  .layer { font-weight: 700; color: var(--navy); white-space: nowrap; }
+  .hint { color: var(--soft); font-size: 0.92rem; }
+  .sources a { color: var(--teal); }
+  .seg-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 16px;
+  }
+  .seg-nav a {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    border: 1px solid var(--border-strong, #d0c8b8);
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+  .seg-nav a:hover { border-color: var(--gold); color: var(--teal); }
+  footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  @media (max-width: 720px) {
+    table { display: block; overflow-x: auto; }
+    h1 { font-size: 1.3rem; }
+  }
+  @media print {
+    .top { position: static; }
+    .tab { display: none; }
+    .panel { display: block !important; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+  <div class="course-banner"><span class="kiao">KIAO</span>總校長的 AI 教育寶典 · 一團第二次共學（詮釋層）</div>
+
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">心經詮釋層小抄 <span>分享稿 ⇄ 漢梵對照 · 按圖索驥</span></div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" type="button" data-panel="share" role="tab" aria-selected="true">① 共學分享稿</button>
+        <button class="tab" type="button" data-panel="bilingual" role="tab" aria-selected="false">② 漢梵對照</button>
+      </div>
+      <nav class="jump show" id="jump-share" aria-label="分享稿跳轉">
+        <a href="#s-hammer">錘子</a>
+        <a href="#s-hw">作業／張力</a>
+        <a href="#s-empty">空／無量之網</a>
+        <a href="#s-diff">差異點</a>
+        <a href="#s-three">三問</a>
+        <a href="#s-discord">Discord 原文</a>
+        <a href="#s-90">90 秒版</a>
+      </nav>
+      <nav class="jump" id="jump-bilingual" aria-label="對照跳轉">
+        <a href="#b-sources">出典</a>
+        <a href="#b-hot">熱點</a>
+        <a href="#b1">段1</a>
+        <a href="#b2">段2</a>
+        <a href="#b3">段3</a>
+        <a href="#b4">段4</a>
+        <a href="#b5">段5</a>
+        <a href="#b6">段6</a>
+        <a href="#b7">段7</a>
+        <a href="#b-matrix">無量之網</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== PANEL SHARE ========== -->
+    <section class="panel active" id="panel-share">
+      <h1>共學分享稿 · 個人見解</h1>
+      <p class="lede">第二週作業素材＝心經文本分析。站位：<strong>框架中學習，並搭配跳脫</strong>。P0 敏感細節不在此頁。</p>
+
+      <div class="card" id="s-hammer">
+        <h2><span class="time">0:00–1:00</span>暖身 · 我的錘子</h2>
+        <p class="quote">我會先看見人的差異性、需求、能力邊界，以及學習特性裡的優勢與劣勢。</p>
+        <p class="hint">特教訓練第一眼：站在哪、卡在哪、哪裡有力道可借。</p>
+      </div>
+
+      <div class="card" id="s-hw">
+        <h2><span class="time">1:00–2:30</span>第二週作業：為什麼是心經</h2>
+        <ul>
+          <li><strong>知識層</strong>：玄奘譯本（課誦熟悉版）</li>
+          <li><strong>詮釋層替代</strong>：梵文短本用字、異譯、學界切面（無作者 Podcast → 用文本切面代替親口）</li>
+        </ul>
+        <p>心經對我＝學會<strong>跳脫僵固框架</strong>、看待世界與面對自我的入門石。</p>
+        <h3>跟講師的張力</h3>
+        <ul>
+          <li>第二場：<em>不要打破框架，要看見／保有框架</em>；硬砸會傷到人格；加第二、第三框架對照。</li>
+          <li>我的語感：練習<strong>跳脫</strong>，不被單一世界觀綁死。</li>
+        </ul>
+        <p class="quote">站位：在框架中學習，並搭配跳脫。<br>先看見錘子＋第二框架；再用「空」提醒——連「第二框架／空／我跳脫了」都可以執，那一執就要鬆。</p>
+      </div>
+
+      <div class="card" id="s-empty">
+        <h2><span class="time">2:30–4:00</span>空＋《無量之網》</h2>
+        <ul>
+          <li>著有不對，著空也不對</li>
+          <li>開明通透：看原理與運作</li>
+          <li>回歸本源：圖像接近桂格·布萊登《無量之網》（Gregg Braden, <em>The Divine Matrix</em>；橡實·達娃譯）——書訊：容器／橋樑／鏡子</li>
+        </ul>
+        <p class="hint sources">出典：
+          <a href="https://www.greggbraden.com/the-divine-matrix/" target="_blank" rel="noopener">greggbraden.com</a> ·
+          <a href="https://www.andbooks.com.tw/book.php?book_sn=3912" target="_blank" rel="noopener">大雁書訊</a> ·
+          <a href="https://www.books.com.tw/products/E050224452" target="_blank" rel="noopener">博客來</a>
+        </p>
+      </div>
+
+      <div class="card" id="s-diff">
+        <h2><span class="time">4:00–5:30</span>一個差異點</h2>
+        <p>課誦「五蘊皆空」→ 容易變虛無金句。<br>
+        梵文短本：看見五蘊<strong>空掉自性</strong>（<code>svabhāva-śūnya</code>）。</p>
+        <p class="quote">空的是無固定實體，不是把人生刪掉。＝「看見框架」做成的樣子。</p>
+      </div>
+
+      <div class="card" id="s-three">
+        <h2><span class="time">5:30–8:00</span>三問</h2>
+        <p><span class="pill agree">最同意</span>自性空 ≠ 什麼都沒有。漢譯「皆空」好背，也容易長虛無讀法。</p>
+        <p><span class="pill disagree">最不同意</span>把梵文神話成更聖的真理原件。對照有用；不自動比較聖。</p>
+        <p><span class="pill use">怎麼用</span>特教：看清差異／優劣勢後，不急貼標（著有）、也不放任虛無（著空）；先看運作，再鷹架。</p>
+      </div>
+
+      <div class="card" id="s-90">
+        <h2>若來不及 · 90 秒版</h2>
+        <ul>
+          <li>作業：心經漢梵對照練詮釋層</li>
+          <li>錘子：差異性／需求／邊界／優劣勢</li>
+          <li>張力：講師看見框架 × 我習慣跳脫 → <strong>框架中＋搭配跳脫</strong></li>
+          <li>同意：自性空≠虛無｜不同意：梵文神話｜工作：看運作再鷹架</li>
+        </ul>
+      </div>
+
+      <div class="card" id="s-discord">
+        <h2>Discord 可貼原文</h2>
+        <pre class="discord">【Cyclone · 一團第二次 · 暖身＋第二週作業／詮釋層】
+
+① 我的錘子（一句）
+身為特教教師，我第一眼常會清楚看見：他人的差異性、需求、能力邊界，以及學習特性與優勢、劣勢。
+
+② 第二週作業我選什麼
+我用《般若波羅蜜多心經》做詮釋層練習（漢文課誦本 × 梵文短本／異譯切面對照），當第二週「抓第二框架」的作業素材。心經沒有作者上 Podcast，所以用文本切面代替「親口訪談」。
+
+心經對我而言：不只是金句，是學會跳脫一切僵固框架、看待世界與面對自我的入門石。
+這會跟直播第二場「不要打破框架、要看見／保有框架」拉出張力——我目前的站位是：
+【在框架中學習，並搭配跳脫】先看見錘子與第二框架，再用「空」練習不執死任何一個框架（包括「我已經空了／我沒有框架」這種執）。
+
+・最同意：空是「自性空／沒有固定不變的實體」，不是「什麼都沒有」。「五蘊皆空」少了「自性」限定，虛無讀法容易長出來。
+・最不同意：把「梵文／更早文本」神話成更能校準真理的版本。對照能看見框架；不自動比較聖。
+・工作怎麼用：特教——看清差異／優劣勢後，不急貼標、也不放任虛無；先看這孩子怎麼運作，再設計鷹架。
+
+細部對照與差異性分析在 wiki；P0 私密整合不公開。</pre>
+      </div>
+    </section>
+
+    <!-- ========== PANEL BILINGUAL ========== -->
+    <section class="panel" id="panel-bilingual">
+      <h1>漢梵對照閱讀本</h1>
+      <p class="lede">玄奘 T251 × 梵文短本（Skt-Ā）。共學時可翻到對應段說明「第二框架」長什麼樣。語文學推論標為二手處勿當結論。</p>
+
+      <h2 id="b-sources">出典總表</h2>
+      <table>
+        <thead><tr><th>代號</th><th>文本</th><th>取用處</th></tr></thead>
+        <tbody>
+          <tr><td>T251</td><td>玄奘《般若波羅蜜多心經》</td><td>CBETA／大正藏 T08n0251</td></tr>
+          <tr><td>T250</td><td>鳩摩羅什略本異譯</td><td>CBETA T08n0250</td></tr>
+          <tr><td>Skt-Ā</td><td>梵文短本＋英譯（Ānandajoti）</td><td class="sources"><a href="https://www.ancient-buddhist-texts.net/Texts-and-Translations/Short-Pieces-in-Sanskrit/Prajnaparamita-Hrdaya.htm" target="_blank" rel="noopener">Ancient Buddhist Texts</a></td></tr>
+          <tr><td>Attwood</td><td>心經語文學系列</td><td class="sources"><a href="https://jayarava.blogspot.com/search?q=heart+sutra" target="_blank" rel="noopener">jayarava.blogspot</a>／JOCBS</td></tr>
+          <tr><td>Nattier 1992</td><td>漢文起源說地基</td><td><em>JIABS</em> 15(2): 153–223</td></tr>
+          <tr><td>Huifeng 2014</td><td>「以無所得故」等重讀</td><td><em>JOCBS</em> 6: 72–105</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="b-hot">高落差熱點（共學優先指這裡）</h2>
+      <table>
+        <thead><tr><th>#</th><th>漢文常見印象</th><th>對照點</th><th>強度</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>五蘊皆空＝什麼都沒有</td><td>梵文自性空 <code>svabhāva-śūnya</code></td><td>字面高</td></tr>
+          <tr><td>2</td><td>度一切苦厄是原典骨架</td><td>梵文短本常無此句</td><td>文獻高</td></tr>
+          <tr><td>3</td><td>無有恐怖＝心情平靜</td><td><code>atrasta</code>＝不顫慄</td><td>字面高</td></tr>
+          <tr><td>4</td><td>心經＝講「心」的哲學書</td><td><code>hṛdaya</code>＝要旨；近陀羅尼</td><td>語文學中</td></tr>
+          <tr><td>5</td><td>空中無…＝世界沒內容</td><td>處格／條件下之否定</td><td>字面＋詮釋</td></tr>
+          <tr><td>6</td><td>以無所得故開下一段</td><td>可能另屬「不取」系</td><td>待核</td></tr>
+          <tr><td>7</td><td>梵文一定更原始正確</td><td>漢文起源／回譯假說</td><td>假說</td></tr>
+        </tbody>
+      </table>
+
+      <div class="seg-nav">
+        <a href="#b1">段1 開經</a>
+        <a href="#b2">段2 色空</a>
+        <a href="#b3">段3 空相</a>
+        <a href="#b4">段4 空中無</a>
+        <a href="#b5">段5 無所得</a>
+        <a href="#b6">段6 三世佛</a>
+        <a href="#b7">段7 咒</a>
+      </div>
+
+      <div class="card" id="b1">
+        <h3>段 1｜開經</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>觀自在菩薩，行深般若波羅蜜多時，照見五蘊皆空，度一切苦厄。</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>…pañca-skandhāṃs tāṃś ca <strong>svabhāva-śūnyān</strong> paśyati sma.</td></tr>
+          <tr><td class="layer">英</td><td>…saw them <strong>empty of self-nature</strong>.</td></tr>
+          <tr><td class="layer">說明</td><td>「自性」梵文有、<strong>度一切苦厄</strong>梵文短本常無對應。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b2">
+        <h3>段 2｜色空四句</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>舍利子，色不異空，空不異色；色即是空，空即是色。受想行識，亦復如是。</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>rūpaṃ śūnyatā… rūpān na pṛthak śūnyatā…</td></tr>
+          <tr><td class="layer">說明</td><td>漢四句／梵多分句；<code>na pṛthak</code> 用法有語文學爭議（二手）。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b3">
+        <h3>段 3｜空相</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>舍利子，是諸法空相，不生不滅，不垢不淨，不增不減。</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>sarva-dharmāḥ śūnyatā-lakṣaṇā, anutpannā aniruddhā…</td></tr>
+          <tr><td class="layer">說明</td><td>「諸法」主詞與般若底本誰對誰，有爭議。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b4">
+        <h3>段 4｜空中無…</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>是故空中無色，無受想行識…無智亦無得。</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>śūnyatāyāṃ na rūpaṃ… na jñānaṃ na prāptir…</td></tr>
+          <tr><td class="layer">說明</td><td>「空中」＝處格條件，不是隨口全稱否定。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b5">
+        <h3>段 5｜無所得故／心無罣礙</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>以無所得故…心無罣礙…無有恐怖…遠離顛倒夢想…</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>…viharaty <strong>acittāvaraṇaḥ</strong>… <strong>atrasto</strong>… viparyāsātikrānto…</td></tr>
+          <tr><td class="layer">英</td><td>…does not tremble…</td></tr>
+          <tr><td class="layer">說明</td><td><code>atrasta</code>＝不顫慄；「夢」字梵文此處常無對應詞。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b6">
+        <h3>段 6｜三世諸佛</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>三世諸佛，依般若波羅蜜多故，得阿耨多羅三藐三菩提。</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>tryadhva-vyavasthitāḥ sarva-buddhāḥ…</td></tr>
+          <tr><td class="layer">說明</td><td>構詞是否偏漢語習慣＝語文學主張，非信仰裁定。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b7">
+        <h3>段 7｜咒</h3>
+        <table>
+          <tr><td class="layer">漢 · T251</td><td>…是大神咒…能除一切苦…揭諦揭諦…菩提薩婆訶。</td></tr>
+          <tr><td class="layer">梵 · Skt-Ā</td><td>mahā-mantra / mahā-vidyā-mantra… gate gate pāragate pārasaṃgate bodhi svāhā</td></tr>
+          <tr><td class="layer">說明</td><td><code>vidyā</code>／mantra 用語史有討論；「能除一切苦」與開頭苦厄句首尾呼應。</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="b-matrix">
+        <h3>《無量之網》出典（個人回本源圖像）</h3>
+        <table>
+          <tr><td class="layer">英文</td><td>Gregg Braden, <em>The Divine Matrix</em></td></tr>
+          <tr><td class="layer">繁中</td><td>《無量之網：連結宇宙萬物的母體》，達娃譯，橡實文化</td></tr>
+          <tr><td class="layer">書訊喻</td><td>容器／橋樑／鏡子（書訊用語；與華嚴因陀羅網、語文學分系統，勿混證）</td></tr>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    來源：Cyclone-Wiki <code>co-learning/2026-08-08-interp-layer-heart-sutra-share.md</code>
+    ＋ <code>2026-08-06-heart-sutra-bilingual-reading.md</code>
+    · 輸出 repo：<code>cyclone-tw/kiao-ai-course</code>
+    · Issue #4 · 僅供共學按圖索驥，不含 P0。
+  </footer>
+
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.tab');
+  var panels = {
+    share: document.getElementById('panel-share'),
+    bilingual: document.getElementById('panel-bilingual')
+  };
+  var jumps = {
+    share: document.getElementById('jump-share'),
+    bilingual: document.getElementById('jump-bilingual')
+  };
+
+  function activate(name) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-panel') === name;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    Object.keys(panels).forEach(function (k) {
+      panels[k].classList.toggle('active', k === name);
+      jumps[k].classList.toggle('show', k === name);
+    });
+    history.replaceState(null, '', '#' + name);
+  }
+
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      activate(t.getAttribute('data-panel'));
+      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    });
+  });
+
+  var hash = (location.hash || '').replace(/^#/, '');
+  if (hash === 'bilingual' || hash.indexOf('b') === 0 && hash !== 's-hammer') {
+    if (hash === 'bilingual' || /^b([\d-]|sources|hot|matrix)/.test(hash)) {
+      activate('bilingual');
+      if (hash !== 'bilingual') {
+        var el = document.getElementById(hash);
+        if (el) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+      }
+    }
+  } else if (hash === 'share' || hash.indexOf('s-') === 0) {
+    activate('share');
+    if (hash.indexOf('s-') === 0) {
+      var el2 = document.getElementById(hash);
+      if (el2) setTimeout(function () { el2.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -7,15 +7,22 @@
 | 資料夾 | 說明 |
 |--------|------|
 | [`p0-system-filler/`](./p0-system-filler/) | **P0 作業**：第零號個人系統填寫器（支援分批匯出／匯入 Markdown） |
+| [`co-learning/2026-08-08-heart-sutra-interp/`](./co-learning/2026-08-08-heart-sutra-interp/) | **共學 HTML**：一團第二次 · 心經詮釋層（分享稿 ⇄ 漢梵對照雙頁籤） |
 
-## 線上預覽（P0）
+## 線上預覽
 
-若已開啟 GitHub Pages，P0 填寫器路徑：
+若已開啟 GitHub Pages：
 
-`https://cyclone-tw.github.io/kiao-ai-course/p0-system-filler/`
+- P0 填寫器：`https://cyclone-tw.github.io/kiao-ai-course/p0-system-filler/`
+- 心經共學小抄：`https://cyclone-tw.github.io/kiao-ai-course/co-learning/2026-08-08-heart-sutra-interp/`
 
-（Pages 啟用後才會生效。）
+（Pages 啟用後才會生效；本機也可直接開 `index.html`。）
 
 ## 來源
 
 題目結構對齊原站 [P0 系統](https://roy722-creator.github.io/HSAILEARNING/)。本 repo 為課程作業與本機填寫輔助，非原站官方 repo。
+
+心經共學 HTML 內容對應 Cyclone-Wiki：
+`Private/Learning/courses/kiao-ai-education-bible/co-learning/2026-08-08-interp-layer-heart-sutra-share.md`
+與
+`…/2026-08-06-heart-sutra-bilingual-reading.md`。
