@@ -235,6 +235,113 @@
     border-radius: 10px;
   }
   .seg-nav a:hover { border-color: var(--gold); color: var(--teal); }
+  .hot-legend {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 20px;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 1.02rem;
+  }
+  .hot-legend strong { color: var(--navy); }
+  .hot-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin: 16px 0;
+  }
+  .hot-card .hot-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .hot-num {
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 800;
+    font-size: 1.1rem;
+    min-width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hot-strength {
+    margin-left: auto;
+    font-size: 0.95rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #eef1f7;
+    color: var(--navy);
+  }
+  .hot-strength.hi { background: #e5f3f4; color: var(--teal); }
+  .hot-strength.mid { background: #f7efe3; color: var(--warn); }
+  .hot-strength.lo { background: #f3f3f3; color: var(--muted); }
+  .vs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 10px 0 14px;
+  }
+  @media (max-width: 800px) {
+    .vs { grid-template-columns: 1fr; }
+  }
+  .vs .side {
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .vs .before {
+    background: #f7f2ea;
+    border: 1px solid #e5d8c2;
+  }
+  .vs .after {
+    background: #eaf4f5;
+    border: 1px solid #c5d9dd;
+  }
+  .vs .label {
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+    color: var(--soft);
+  }
+  .vs .side p {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .say {
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: #fffaf0;
+    border-left: 6px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    font-size: 1.12rem;
+    line-height: 1.65;
+    color: var(--navy);
+  }
+  .say .tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--gold);
+    margin-bottom: 4px;
+    letter-spacing: 0.06em;
+  }
+  .why {
+    margin-top: 10px;
+    color: var(--soft);
+    font-size: 1.02rem;
+  }
   footer {
     max-width: 1200px;
     margin: 0 auto;
@@ -395,19 +502,185 @@
         </tbody>
       </table>
 
-      <h2 id="b-hot">高落差熱點（共學優先指這裡）</h2>
-      <table>
-        <thead><tr><th>#</th><th>漢文常見印象</th><th>對照點</th><th>強度</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>五蘊皆空＝什麼都沒有</td><td>梵文自性空 <code>svabhāva-śūnya</code></td><td>字面高</td></tr>
-          <tr><td>2</td><td>度一切苦厄是原典骨架</td><td>梵文短本常無此句</td><td>文獻高</td></tr>
-          <tr><td>3</td><td>無有恐怖＝心情平靜</td><td><code>atrasta</code>＝不顫慄</td><td>字面高</td></tr>
-          <tr><td>4</td><td>心經＝講「心」的哲學書</td><td><code>hṛdaya</code>＝要旨；近陀羅尼</td><td>語文學中</td></tr>
-          <tr><td>5</td><td>空中無…＝世界沒內容</td><td>處格／條件下之否定</td><td>字面＋詮釋</td></tr>
-          <tr><td>6</td><td>以無所得故開下一段</td><td>可能另屬「不取」系</td><td>待核</td></tr>
-          <tr><td>7</td><td>梵文一定更原始正確</td><td>漢文起源／回譯假說</td><td>假說</td></tr>
-        </tbody>
-      </table>
+      <h2 id="b-hot">高落差熱點｜共學怎麼講</h2>
+      <p class="lede">共學時<strong>優先用這七張卡</strong>。每張都有：大家常怎麼聽 → 對照後差在哪 → 你可以照念的一句話。</p>
+      <div class="hot-legend">
+        <div><strong>強度怎麼讀：</strong></div>
+        <div><span class="hot-strength hi">字面高</span> 漢字／梵字可以直接對上，講起來最穩。</div>
+        <div><span class="hot-strength hi">文獻高</span> 多個寫本／版本對得出「有／無」差異。</div>
+        <div><span class="hot-strength mid">語文學中／字面＋詮釋</span> 要多講一層「為什麼這樣讀」，別講成鐵證。</div>
+        <div><span class="hot-strength lo">待核／假說</span> 只能當「有一派人這樣主張」，不要當結論。</div>
+      </div>
+      <div class="seg-nav">
+        <a href="#hot1">熱點1 自性空</a>
+        <a href="#hot2">熱點2 苦厄</a>
+        <a href="#hot3">熱點3 不顫慄</a>
+        <a href="#hot4">熱點4 心＝要旨</a>
+        <a href="#hot5">熱點5 空中</a>
+        <a href="#hot6">熱點6 無所得</a>
+        <a href="#hot7">熱點7 誰更原</a>
+      </div>
+
+      <article class="hot-card" id="hot1">
+        <div class="hot-title">
+          <span class="hot-num">1</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">五蘊皆空，常被聽成「什麼都沒有」</h3>
+          <span class="hot-strength hi">字面高</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象（課誦框架）</div>
+            <p>「五蘊皆空」＝人生／世界其實空掉、沒有內容，像虛無主義金句。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點（梵文短本）</div>
+            <p>寫的是看見五蘊 <strong>svabhāva-śūnya</strong>＝「空掉<strong>自性</strong>」：沒有固定不變的實體，不是把桌子抹成幻影。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「漢譯壓成四個字很好背，但少了『自性』兩個字，聽者很容易滑向『什麼都沒有』。對照梵文後，我比較站『無固定實體／不執』，不是虛無。」
+        </div>
+        <p class="why">為什麼重要：這就是你「最同意」那一點的底圖；也直接示範第二場的「看見自己框架邊界」。</p>
+      </article>
+
+      <article class="hot-card" id="hot2">
+        <div class="hot-title">
+          <span class="hot-num">2</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">「度一切苦厄」不一定是梵文骨架</h3>
+          <span class="hot-strength hi">文獻高</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象</div>
+            <p>開頭這句最撫慰，看起來像原典主軸，沒它心經就不完整。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點</div>
+            <p>多個梵文短本／對照常用本，<strong>常常找不到對應句</strong>；漢文略本（含 T250／T251）卻有——可能是漢地增益，或梵本刪略（有爭議）。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「這句對漢地讀者很重要，不代表它一定是梵文祖本的核心句。用途上它可以安慰人；史實上要標『版本有差』。」
+        </div>
+        <p class="why">為什麼重要：幫你分開「這句對我有用」跟「這句一定是原文」——對應你不同意把某文本神話化。</p>
+      </article>
+
+      <article class="hot-card" id="hot3">
+        <div class="hot-title">
+          <span class="hot-num">3</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">「無有恐怖」不只是心情平靜</h3>
+          <span class="hot-strength hi">字面高</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象</div>
+            <p>讀成心理狀態：心裡不怕、比較淡定。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點</div>
+            <p>梵文 <code>atrasta</code> 字面偏向「不顫慄、不發抖」——比較像身體／驚嚇反應被撐住，英譯常見 <em>does not tremble</em>。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「中文『恐怖』偏心情；梵文字根比較像身體嚇到發抖。同一句，一邊像雞湯，一邊像修行狀態裡真的發生的反應。」
+        </div>
+        <p class="why">為什麼重要：示範「翻譯會換掉身體感」——第二場講的失真／詮釋層就在這裡。</p>
+      </article>
+
+      <article class="hot-card" id="hot4">
+        <div class="hot-title">
+          <span class="hot-num">4</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">《心經》的「心」不一定是心理學的心</h3>
+          <span class="hot-strength mid">語文學中</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象</div>
+            <p>書名有「心」→ 當成講心靈、情緒、心法的哲學書。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點</div>
+            <p>梵文 <code>hṛdaya</code> 常是「要旨／精髓／核心」；有傳統更接近陀羅尼／咒語功能，不是現代「psychology 的心」。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「漢字『心』一次扛了太多意思。對照後我比較把它當『般若的精要本』，不是心靈雞湯專書。」
+        </div>
+        <p class="why">為什麼重要：強度只到「中」——講時標「語文學主張」，別講成唯一正解。</p>
+      </article>
+
+      <article class="hot-card" id="hot5">
+        <div class="hot-title">
+          <span class="hot-num">5</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">「空中無色…」不是宣告世界沒內容</h3>
+          <span class="hot-strength mid">字面＋詮釋</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象</div>
+            <p>一大串「無」＝世界沒有眼耳鼻舌、沒有苦集滅道……世界空掉了。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點</div>
+            <p>「空中」在梵文是處格：<strong>在空的狀態／條件裡</strong>怎麼樣。比較像條件句，不是無差別否定全宇宙。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「這串『無』前面有『空中』——是特定狀態下的描述，不是無條件世界新聞。磨掉條件，整段就變成虛無口號。」
+        </div>
+        <p class="why">為什麼重要：接到你特教用法——標籤／目標也要留條件，不能壓成金句。</p>
+      </article>
+
+      <article class="hot-card" id="hot6">
+        <div class="hot-title">
+          <span class="hot-num">6</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">「以無所得故」斷句可能改讀法</h3>
+          <span class="hot-strength lo">待核</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象</div>
+            <p>讀成下一段開頭：因為沒得到什麼，所以菩薩心無罣礙……像因果口號。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點（重讀主張）</div>
+            <p>有學者主張它應對回「不執取／不取」系，甚至斷句往前接到「無智亦無得」後面——細節請核 Huifeng 2014，<strong>不要當已定論</strong>。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「這一點我只當『有人提出不同斷句』。我今天要秀的是：連我們每天背的斷句，都可能是一種框架，不是終點。」
+        </div>
+        <p class="why">為什麼重要：示範怎樣誠實講「還在查／待核」，避免共學被問倒。</p>
+      </article>
+
+      <article class="hot-card" id="hot7">
+        <div class="hot-title">
+          <span class="hot-num">7</span>
+          <h3 style="margin:0;border:0;padding:0;color:var(--navy)">梵文不自動＝更原始、更正確</h3>
+          <span class="hot-strength lo">假說</span>
+        </div>
+        <div class="vs">
+          <div class="side before">
+            <div class="label">常見印象</div>
+            <p>梵文＝原典；中文＝譯本；找到梵文就能校準真理。</p>
+          </div>
+          <div class="side after">
+            <div class="label">對照點</div>
+            <p>學界有「漢文可能較早、梵文可能回譯」假說（Nattier 等）。這是研究方向，不是判決書。</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="tag">口說可以這樣講</div>
+          「我最不同意把梵文神話成更聖的原件。對照的價值是降失真、看見框架；不是另立一個權威。」
+        </div>
+        <p class="why">為什麼重要：這就是你「最不同意」的公開講法；強度標「假說」，主動講清邊界反而更有可信度。</p>
+      </article>
 
       <div class="seg-nav">
         <a href="#b1">段1 開經</a>
