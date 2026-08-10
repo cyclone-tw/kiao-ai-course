@@ -2,6 +2,17 @@
 
 本 repo 專門存放 [KIAO 總校長 AI 教育寶典](https://roy722-creator.github.io/HSAILEARNING/) 相關的作業與輔助工具。
 
+## 四地地圖（產出要放哪裡）
+
+| 系統 | 位置 | 角色 |
+| --- | --- | --- |
+| **本 repo（GitHub）** | 這裡 | 可跑的作業／工具碼 |
+| **Google Drive** | `01.課程與研習/總校長的AI教育寶典/` | 講師原始檔、PDF、skill、禮物 |
+| **Cyclone-Wiki** | `Private/Learning/courses/kiao-ai-education-bible/` | 知識索引、摘要、指標 |
+| **Notion** | [KIAO ‧ 總校長的 AI 教育寶典](https://app.notion.com/p/a2dcf7ea216e417ab5f6e28e57aa7d3e) | 分類筆記／會議／復盤 |
+
+> 完整路由表（含產出類型對照）：Drive `00_四地地圖.md`；Wiki `四地地圖.md`。
+
 ## 目錄
 
 | 資料夾 | 說明 |
